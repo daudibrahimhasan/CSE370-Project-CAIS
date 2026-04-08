@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block page_title %}WARRANT TRACKING{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-end border-b border-[#2e2e2e] pb-4">
+    <div>
+        <h3 class="text-[#e0e0e0] text-lg uppercase tracking-widest">Warrant Database</h3>
+        <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Track and filter all issued system warrants.</p>
+    </div>
+</div>
+
+<!-- Feature 9: Warrant tracking filterable by Active or Cancelled -->
+<div class="bg-[#1a1a1a] p-6 border border-[#2e2e2e] mb-8">
+    <form method="get" action="{% url 'warrant_tracking' %}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="col-span-3">
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest" for="status">Status Filter</label>
+            <select name="status" id="status" class="cas-input w-full p-2 text-xs uppercase tracking-widest">
+                <option value="">-- All Warrants --</option>
+                <option value="Active" {% if selected_status == 'Active' %}selected{% endif %}>ACTIVE WARRANTS ONLY</option>
+                <option value="Cancelled" {% if selected_status == 'Cancelled' %}selected{% endif %}>CANCELLED WARRANTS</option>
+            </select>
+        </div>
+        <div class="flex items-end">
+            <button type="submit" class="w-full bg-[#c0392b] text-white p-2 uppercase text-xs font-bold hover:bg-[#e74c3c] tracking-widest transition-colors">
+                Apply Filter
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden">
+    <table class="w-full text-left cas-table">
+        <thead class="bg-[#111]">
+            <tr>
+                <th class="p-4 tracking-widest">ID</th>
+                <th class="p-4 tracking-widest">Issued Date</th>
+                <th class="p-4 tracking-widest">Subject</th>
+                <th class="p-4 tracking-widest">Status</th>
+            </tr>
+        </thead>
+        <tbody class="text-xs" id="warrants-body">
+            {% for warrant in warrants %}
+            <tr>
+                <td class="p-4 font-mono text-[#888]">#{{ warrant.warrant_id }}</td>
+                <td class="p-4 font-mono">{{ warrant.issue_date|date:"Y-m-d" }}</td>
+                <td class="p-4">
+                    <a href="{% url 'criminal_profile' warrant.criminal.criminal_id %}" class="text-[#e0e0e0] hover:text-[#c0392b] hover:underline uppercase font-bold tracking-wider">
+                        {{ warrant.criminal.name }}
+                    </a>
+                </td>
+                <td class="p-4 font-bold text-[10px] tracking-widest uppercase {% if warrant.status == 'Active' %}text-[#c0392b]{% else %}text-[#888]{% endif %}">
+                    {{ warrant.status }}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="p-8 text-center text-[#888] tracking-widest uppercase">
+                    No warrants found matching criteria.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

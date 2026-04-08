@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block page_title %}HIGH FREQUENCY OFFENDERS{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-center border-b border-[#2e2e2e] pb-4">
+    <div>
+        <h2 class="text-2xl font-bold text-[#c0392b] tracking-wider flex items-center gap-2 uppercase">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#c0392b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            Priority Targets Alert
+        </h2>
+        <p class="text-[#888] text-xs mt-1 uppercase tracking-widest">Subjects involved in multiple crimes (2 or more offences). Automatically flagged.</p>
+    </div>
+    <div class="text-[#c0392b] text-xs border border-[#c0392b] px-3 py-1 bg-[#c0392b] bg-opacity-10 tracking-widest font-bold">
+        THRESHOLD: &ge;2 INCIDENTS
+    </div>
+</div>
+
+<!-- Feature 2: Repeat Offender Alert -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="repeat-list">
+    {% for offender in offenders %}
+    
+    <!-- Pulse effect if count is particularly high -->
+    <div class="bg-[#1a1a1a] p-0 flex flex-col border border-[#2e2e2e] {% if offender.crime_count >= 5 %}border-l-4 border-[#c0392b] animate-pulse{% else %}border-l-2 border-[#555]{% endif %}">
+        <div class="p-6 flex-grow flex justify-between items-center">
+            <div>
+                <div class="flex items-center gap-3">
+                    <h4 class="text-xl font-heading text-[#e0e0e0] uppercase tracking-wider">{{ offender.name }}</h4>
+                    {% if offender.crime_count >= 5 %}
+                    <span class="text-[10px] bg-[#c0392b] text-white px-1 tracking-widest font-bold">EXTREME</span>
+                    {% endif %}
+                </div>
+                <div class="text-[#666] text-xs mt-1 font-mono">ID: #{{ offender.criminal_id }}</div>
+            </div>
+            
+            <div class="text-right">
+                <div class="text-4xl font-heading text-[#c0392b]">{{ offender.crime_count }}</div>
+                <div class="text-[10px] text-[#666] uppercase tracking-widest font-bold">Incidents</div>
+            </div>
+        </div>
+        
+        <div class="bg-[#111] px-6 py-3 border-t border-[#2e2e2e] flex justify-center">
+            <a href="{% url 'criminal_profile' offender.criminal_id %}" class="text-[#888] hover:text-[#fff] hover:font-bold tracking-widest text-[10px] uppercase transition-all">
+                Access Subject File &rarr;
+            </a>
+        </div>
+    </div>
+    
+    {% empty %}
+    <div class="col-span-full border border-[#16a34a] bg-[#16a34a] bg-opacity-10 p-8 text-center text-[#16a34a]">
+        <p class="font-heading text-2xl tracking-widest mb-1">NO REPEAT OFFENDERS FOUND.</p>
+        <p class="text-[10px] uppercase tracking-widest font-bold">There are currently no individuals matching the priority target criteria.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

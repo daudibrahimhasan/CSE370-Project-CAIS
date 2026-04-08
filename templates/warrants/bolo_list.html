@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block page_title %}ACTIVE BOLOs{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <h2 class="text-3xl font-black text-[#c0392b] tracking-wider uppercase">BOLO: BE ON THE LOOKOUT</h2>
+    <p class="text-[#888] text-xs mt-1 uppercase tracking-widest">Active warrants requiring immediate attention from all precincts.</p>
+</div>
+
+<!-- Feature 11: BOLO list querying all active warrants -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for bolo in bolos %}
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0 flex flex-col relative overflow-hidden group">
+        <div class="absolute top-0 left-0 w-full h-1 bg-[#c0392b]"></div>
+        <div class="p-6 flex gap-4">
+            <div class="relative">
+                <!-- Using a placeholder or the fingerprint design for the image if none exists -->
+                <div class="w-20 h-20 bg-[#111] border border-[#333] flex items-center justify-center text-[#c0392b] font-heading text-4xl">
+                    ?
+                </div>
+                <div class="absolute -top-1 -right-1 w-3 h-3 bg-[#c0392b] rounded-full animate-pulse-red"></div>
+            </div>
+            <div>
+                <h4 class="text-xl font-heading text-[#e0e0e0] tracking-wide uppercase">{{ bolo.name }}</h4>
+                <div class="text-[#c0392b] text-xs font-bold mt-1">ID: #{{ bolo.criminal_id }}</div>
+                <div class="text-[#666] text-[10px] mt-2 uppercase">AGE: {{ bolo.age }} | GENDER: <span class="text-[#e0e0e0]">{{ bolo.gender }}</span></div>
+            </div>
+        </div>
+        
+        <div class="px-6 pb-2">
+            <div class="text-[#888] text-[10px] uppercase border-b border-[#333] pb-1 mb-1 tracking-widest">Physical Description</div>
+            <div class="text-[#e0e0e0] text-sm">{{ bolo.physical_description|default:"None on file." }}</div>
+        </div>
+        
+        <div class="px-6 pb-6 mt-auto">
+            <div class="text-[#888] text-[10px] uppercase border-b border-[#333] pb-1 mb-1 tracking-widest">Warrant Status</div>
+            <div class="text-[#16a34a] text-sm font-mono uppercase">ACTIVE / ISSUED: {{ bolo.issue_date|date:"Y-m-d" }}</div>
+        </div>
+        
+        <div class="mt-2 flex border-t border-[#2e2e2e]">
+            <a href="{% url 'criminal_profile' bolo.criminal_id %}" class="flex-1 text-center py-2 text-[#888] hover:text-[#c0392b] hover:bg-[#222] text-xs uppercase tracking-widest transition-colors font-bold">
+                View Subject File &rarr;
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-full border border-[#16a34a] bg-[#16a34a] bg-opacity-10 p-8 text-center">
+        <h3 class="font-heading text-2xl text-[#16a34a] mb-2 tracking-widest">NO ACTIVE ALERTS</h3>
+        <p class="text-[#888] text-xs uppercase tracking-widest">There are currently no active warrants on file.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

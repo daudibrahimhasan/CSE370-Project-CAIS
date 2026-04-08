@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block page_title %}SYSTEM PERSONNEL{% endblock %}
+
+{% block content %}
+<div class="mb-6 border-b border-[#2e2e2e] pb-4">
+    <h3 class="text-[#e0e0e0] uppercase tracking-widest text-lg">Officer Roster & Search</h3>
+    <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Filter active personnel by rank or assigned division.</p>
+</div>
+
+<!-- Feature 5: Search officers by rank or team -->
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6 mb-8">
+    <form method="get" action="{% url 'officer_search' %}" class="flex flex-wrap gap-4 items-end">
+        <div class="flex-grow">
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest" for="rank">Rank Selection</label>
+            <select name="rank" id="rank" class="cas-input w-full p-2 text-xs uppercase tracking-widest">
+                <option value="">-- All Ranks --</option>
+                {% for rank in ranks %}
+                <option value="{{ rank }}" {% if rank == selected_rank %}selected{% endif %}>{{ rank }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="flex-grow">
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest" for="team">Unit / Division</label>
+            <select name="team" id="team" class="cas-input w-full p-2 text-xs uppercase tracking-widest">
+                <option value="">-- All Divisions --</option>
+                {% for team in teams %}
+                <option value="{{ team.team_id }}" {% if team.team_id|stringformat:"s" == selected_team %}selected{% endif %}>{{ team.team_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="bg-[#c0392b] text-white p-2 px-6 uppercase text-xs font-bold hover:bg-[#e74c3c] tracking-widest transition-colors">
+                Initiate Query
+            </button>
+            <a href="{% url 'officer_search' %}" class="ml-4 text-[10px] uppercase font-bold text-[#888] hover:text-[#e0e0e0] tracking-widest border-b border-[#888] pb-0.5">
+                Clear Filters
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden">
+    <table class="w-full text-left cas-table">
+        <thead class="bg-[#111]">
+            <tr>
+                <th class="p-4 tracking-widest">Badge #</th>
+                <th class="p-4 tracking-widest">Officer Name</th>
+                <th class="p-4 tracking-widest">Rank</th>
+                <th class="p-4 tracking-widest">Division</th>
+            </tr>
+        </thead>
+        <tbody class="text-xs border-[#2e2e2e]">
+            {% for officer in officers %}
+            <tr class="hover:bg-[#1f1f1f] transition-colors border-b border-[#2e2e2e]">
+                <td class="p-4 font-mono text-[#c0392b] font-bold">{{ officer.badge_number }}</td>
+                <td class="p-4 font-heading text-[#e0e0e0] tracking-wider text-sm">{{ officer.name }}</td>
+                <td class="p-4">
+                    <span class="px-2 py-0.5 border border-[#888] text-[#888] uppercase tracking-widest text-[10px] font-bold">
+                        {{ officer.rank }}
+                    </span>
+                </td>
+                <td class="p-4 text-[#888] uppercase tracking-wide">{{ officer.team_name|default:"UNASSIGNED" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="p-8 text-center text-[#888] font-bold tracking-widest uppercase bg-[#111]">
+                    NO PERSONNEL FOUND MATCHING CRITERIA.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

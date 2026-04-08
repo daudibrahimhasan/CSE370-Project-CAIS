@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block page_title %}CRIME RECORD #{{ crime.crime_id }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'crime_list' %}" class="text-[#c0392b] hover:text-[#fff] text-xs uppercase tracking-widest hover:underline">&larr; Return to Records Search</a>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- Primary Crime Details -->
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6 relative">
+            <div class="absolute top-0 left-0 w-full h-1 bg-[#c0392b]"></div>
+            <div class="flex justify-between items-start mb-6 border-b border-[#2e2e2e] pb-4">
+                <div>
+                    <h2 class="text-3xl font-heading text-[#e0e0e0] tracking-wider uppercase">{{ crime.method_used }}</h2>
+                    <p class="text-[#888] font-mono text-sm mt-1 uppercase">{{ crime.date_time|date:"Y-m-d H:i" }} | {{ crime.location }}</p>
+                </div>
+                <div class="px-3 py-1 border border-{% if crime.status == 'Open' %}#c0392b{% elif crime.status == 'Cold' %}#666{% else %}#16a34a{% endif %} bg-{% if crime.status == 'Open' %}#c0392b{% elif crime.status == 'Cold' %}#666{% else %}#16a34a{% endif %} bg-opacity-20 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-{% if crime.status == 'Open' %}#c0392b{% elif crime.status == 'Cold' %}#666{% else %}#16a34a{% endif %} {% if crime.status == 'Open' %}animate-pulse-red{% endif %}"></span>
+                    <span class="text-xs uppercase tracking-widest font-bold text-{% if crime.status == 'Open' %}#c0392b{% elif crime.status == 'Cold' %}#888{% else %}#16a34a{% endif %}">{{ crime.status }}</span>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-[#666] text-[10px] uppercase mb-2 tracking-widest">Incident Description</h3>
+                <p class="text-[#e0e0e0] bg-[#111] border border-[#222] p-4 text-sm leading-relaxed font-mono">
+                    {{ crime.description }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Linked Evidence -->
+        <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0 flex flex-col">
+            <div class="p-4 border-b border-[#2e2e2e] bg-[#222] flex justify-between items-center">
+                <h3 class="text-[#e0e0e0] uppercase text-sm tracking-widest font-bold">Physical Evidence Log</h3>
+                <span class="text-[10px] text-[#666] border border-[#333] px-2 uppercase">{{ evidence_list|length }} Items</span>
+            </div>
+            <div class="p-0">
+                <table class="w-full text-left cas-table">
+                    <tbody class="text-xs">
+                        {% for evidence in evidence_list %}
+                        <tr class="hover:bg-[#1f1f1f] transition-colors border-b border-[#2e2e2e]">
+                            <td class="p-4 font-mono text-[#c0392b] font-bold w-1/4 uppercase">{{ evidence.type }}</td>
+                            <td class="p-4 text-[#888]">{{ evidence.description }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="p-6 text-center text-[#666] italic text-xs uppercase tracking-widest bg-[#111]">No evidence collected.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column (Victims / Suspects) -->
+    <div class="space-y-6">
+        <!-- Feature 8: Victim info per crime -->
+        <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0">
+            <div class="p-4 border-b border-[#2e2e2e]">
+                <h3 class="text-[#e0e0e0] font-bold uppercase tracking-widest text-sm">Associated Victims</h3>
+            </div>
+            <div class="p-0 divide-y divide-[#2e2e2e]">
+                {% for victim in victims %}
+                <div class="p-4 hover:bg-[#111] transition-colors">
+                    <p class="text-[#e0e0e0] font-heading text-lg tracking-wider uppercase">{{ victim.name }}</p>
+                    <div class="mt-2 text-[#888] text-[10px] uppercase tracking-widest">Contact Information:</div>
+                    <div class="mt-1 flex flex-wrap gap-2">
+                        {% for phone in victim.phones.all %}
+                        <span class="font-mono text-[#16a34a] bg-[#16a34a] bg-opacity-10 border border-[#16a34a] px-2 py-0.5">{{ phone.phone_number }}</span>
+                        {% empty %}
+                        <span class="text-[#666] italic text-xs">Unknown / Unreachable</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-6 text-center text-[#666] italic tracking-widest uppercase text-xs">No victims logged.</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Linked Criminals -->
+        <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0">
+            <div class="p-4 border-b border-[#2e2e2e] flex justify-between items-center bg-[#c0392b] bg-opacity-10">
+                <h3 class="text-[#c0392b] font-bold uppercase tracking-widest text-sm">Identified Suspects</h3>
+            </div>
+            <div class="p-0 divide-y divide-[#2e2e2e]">
+                {% for criminal in criminals %}
+                <a href="{% url 'criminal_profile' criminal.criminal_id %}" class="block p-4 hover:bg-[#111] transition-colors group">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[#e0e0e0] font-heading tracking-wider uppercase text-lg group-hover:text-[#c0392b] transition-colors">{{ criminal.name }}</span>
+                        <span class="text-[10px] text-[#666] group-hover:text-[#c0392b] transition-colors">ID #{{ criminal.criminal_id }} &rarr;</span>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="p-6 text-center text-[#666] italic tracking-widest uppercase text-xs">No suspects identified.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

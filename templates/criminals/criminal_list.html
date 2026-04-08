@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block page_title %}SYSTEM SUBJECTS DATABASE{% endblock %}
+
+{% block content %}
+<div class="mb-6 border-b border-[#2e2e2e] pb-4 flex justify-between items-center">
+    <div>
+        <h3 class="text-[#e0e0e0] uppercase tracking-widest text-lg">Master Criminal Record Index</h3>
+        <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Complete registry of all logged subjects within the CAS environment.</p>
+    </div>
+    <a href="{% url 'repeat_offenders' %}" class="bg-[#1a1a1a] border border-[#c0392b] text-[#c0392b] hover:bg-[#c0392b] hover:text-white px-4 py-2 uppercase tracking-widest text-xs transition-colors font-bold">
+        Run Repeat Offender Scan
+    </a>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden">
+    <table class="w-full text-left cas-table">
+        <thead class="bg-[#111]">
+            <tr>
+                <th class="p-4 tracking-widest">System ID</th>
+                <th class="p-4 tracking-widest">Known Alias / Name</th>
+                <th class="p-4 tracking-widest">Age</th>
+                <th class="p-4 tracking-widest">Gender</th>
+                <th class="p-4 tracking-widest">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="text-xs" id="criminal-body">
+            {% for criminal in criminals %}
+            <tr class="hover:bg-[#1f1f1f] transition-colors">
+                <td class="p-4 font-mono text-[#888]">#{{ criminal.criminal_id }}</td>
+                <td class="p-4 text-[#e0e0e0] font-bold uppercase tracking-wider">{{ criminal.name }}</td>
+                <td class="p-4 font-mono">{{ criminal.age }}</td>
+                <td class="p-4 uppercase">{{ criminal.gender }}</td>
+                <td class="p-4">
+                    <a href="{% url 'criminal_profile' criminal.criminal_id %}" class="text-[#c0392b] hover:text-[#fff] tracking-widest uppercase text-[10px] transition-all border border-[#c0392b] hover:bg-[#c0392b] px-3 py-1 mt-1 inline-block">
+                        Access Profile ->
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
+                    DATABASE IS EMPTY. NO RECORDS FOUND.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

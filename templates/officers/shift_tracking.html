@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block page_title %}PERSONNEL LOGS{% endblock %}
+
+{% block content %}
+<div class="mb-6 border-b border-[#2e2e2e] pb-4">
+    <h3 class="text-[#e0e0e0] uppercase tracking-widest text-lg">System Shift Logs</h3>
+    <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Chronological record of all logged hours by active personnel.</p>
+</div>
+
+<!-- Feature 3: Officer shift tracking -->
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0 overflow-hidden tracking-tight">
+    <table class="w-full text-left cas-table">
+        <thead class="bg-[#111]">
+            <tr>
+                <th class="p-4 tracking-widest">Shift Date</th>
+                <th class="p-4 tracking-widest">Officer Name</th>
+                <th class="p-4 tracking-widest">Rank & Badge</th>
+                <th class="p-4 tracking-widest">Hours Logged</th>
+            </tr>
+        </thead>
+        <tbody class="text-xs border-[#2e2e2e]">
+            {% for shift in shifts %}
+            <tr class="hover:bg-[#1f1f1f] transition-colors border-b border-[#2e2e2e]">
+                <td class="p-4 font-mono text-[#e0e0e0]">{{ shift.date|date:"Y-m-d" }}</td>
+                <td class="p-4 font-heading text-[#e0e0e0] tracking-wider text-sm">{{ shift.officer.name }}</td>
+                <td class="p-4 text-[#888] uppercase font-bold tracking-widest text-[10px]">
+                    {{ shift.officer.rank }} [<span class="text-[#c0392b]">{{ shift.officer.badge_number }}</span>]
+                </td>
+                <td class="p-4">
+                    <span class="px-2 py-0.5 border border-[#16a34a] text-[#16a34a] bg-[#16a34a] bg-opacity-10 uppercase tracking-widest text-[10px] font-bold">
+                        {{ shift.hours_worked }} HRS
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
+                    NO SHIFT RECORDS FOUND.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block page_title %}CRIME RECORDS{% endblock %}
+
+{% block content %}
+<div class="mb-6 border-b border-[#2e2e2e] pb-4">
+    <h3 class="text-[#e0e0e0] uppercase tracking-widest text-lg">System Records Database</h3>
+    <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Global view of all registered criminal activity.</p>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden">
+    <table class="w-full text-left cas-table">
+        <thead class="bg-[#111]">
+            <tr>
+                <th class="p-4 tracking-widest">ID</th>
+                <th class="p-4 tracking-widest">Date & Time</th>
+                <th class="p-4 tracking-widest">Method</th>
+                <th class="p-4 tracking-widest">Location</th>
+                <th class="p-4 tracking-widest">Status</th>
+                <th class="p-4 tracking-widest">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="text-xs" id="records-body">
+            {% for crime in crimes %}
+            <tr class="hover:bg-[#1f1f1f] transition-colors">
+                <td class="p-4 font-mono text-[#888]">#{{ crime.crime_id }}</td>
+                <td class="p-4 font-mono text-[#e0e0e0]">{{ crime.date_time|date:"Y-m-d H:i" }}</td>
+                <td class="p-4">{{ crime.method_used }}</td>
+                <td class="p-4 font-mono">{{ crime.location }}</td>
+                <td class="p-4 font-bold text-[10px] tracking-widest uppercase {% if crime.status == 'Open' %}text-[#c0392b]{% elif crime.status == 'Cold' %}text-[#888]{% else %}text-[#16a34a]{% endif %}">
+                    {{ crime.status }}
+                </td>
+                <td class="p-4">
+                    <a href="{% url 'crime_detail' crime.crime_id %}" class="text-[#888] hover:text-[#c0392b] hover:font-bold tracking-widest uppercase text-[10px] transition-all">
+                        View File ->
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="p-8 text-center text-[#888] tracking-widest uppercase">
+                    DATABASE IS EMPTY.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

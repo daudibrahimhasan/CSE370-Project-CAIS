@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block page_title %}SYSTEM_DASHBOARD{% endblock %}
+
+{% block content %}
+<div id="view-dashboard" class="view-section space-y-6">
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Stat Card 1 -->
+        <div class="bg-[#1a1a1a] border-t-2 border-[#c0392b] p-6 relative group hover:bg-[#1f1f1f] transition-colors">
+            <div class="text-[#888] text-xs uppercase tracking-wider mb-2">Total Crimes (YTD)</div>
+            <div class="text-4xl font-heading text-[#e0e0e0] group-hover:text-[#c0392b] transition-colors">{{ total_crimes }}</div>
+            <div class="mt-2 text-[10px] text-[#666] flex items-center">
+                <span class="text-[#16a34a] mr-1">▼ 12%</span> vs last year
+            </div>
+        </div>
+        <!-- Stat Card 2 -->
+        <div class="bg-[#1a1a1a] border-t-2 border-[#c0392b] p-6 relative group hover:bg-[#1f1f1f] transition-colors">
+            <div class="text-[#888] text-xs uppercase tracking-wider mb-2">Active Warrants</div>
+            <div class="text-4xl font-heading text-[#c0392b]">{{ active_warrants }}</div>
+            <div class="mt-2 text-[10px] text-[#666] flex items-center">
+                <span class="text-[#c0392b] mr-1">▲ 5</span> new today
+            </div>
+        </div>
+        <!-- Stat Card 3 -->
+        <div class="bg-[#1a1a1a] border-t-2 border-[#c0392b] p-6 relative group hover:bg-[#1f1f1f] transition-colors">
+            <div class="text-[#888] text-xs uppercase tracking-wider mb-2">Open Cases</div>
+            <div class="text-4xl font-heading text-[#e0e0e0] group-hover:text-[#c0392b] transition-colors">{{ open_cases }}</div>
+            <div class="mt-2 text-[10px] text-[#666]">
+                Clearance Rate: 34%
+            </div>
+        </div>
+        <!-- Stat Card 4 -->
+        <div class="bg-[#1a1a1a] border-t-2 border-[#c0392b] p-6 relative group hover:bg-[#1f1f1f] transition-colors">
+            <div class="text-[#888] text-xs uppercase tracking-wider mb-2">Repeat Offenders</div>
+            <div class="text-4xl font-heading text-[#e0e0e0] group-hover:text-[#c0392b] transition-colors">{{ repeat_offenders_count }}</div>
+            <div class="mt-2 text-[10px] text-[#666]">
+                Flagged for surveillance
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity & Alerts -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-96">
+        <!-- Recent Logs -->
+        <div class="lg:col-span-2 bg-[#1a1a1a] border border-[#2e2e2e] p-0 flex flex-col">
+            <div class="p-4 border-b border-[#2e2e2e] flex justify-between items-center">
+                <h3 class="text-[#c0392b] uppercase text-xs tracking-widest font-bold">Recent System Logs</h3>
+                <span class="text-[10px] text-[#666]">LIVE FEED</span>
+            </div>
+            <div class="p-0 overflow-y-auto flex-1 font-mono text-xs" id="log-container">
+                <!-- Logs injected by JS -->
+            </div>
+        </div>
+
+        <!-- Priority Alerts -->
+        <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0 flex flex-col">
+            <div class="p-4 border-b border-[#2e2e2e] bg-[#c0392b] bg-opacity-10">
+                <h3 class="text-[#c0392b] uppercase text-xs tracking-widest font-bold">Priority Alerts</h3>
+            </div>
+            <div class="p-4 space-y-4 overflow-y-auto flex-1">
+                <div class="border-l-2 border-[#c0392b] pl-3 py-1">
+                    <div class="text-[#e0e0e0] text-xs font-bold">ARMED ROBBERY IN PROGRESS</div>
+                    <div class="text-[#888] text-[10px] mt-1">1245 Industrial Ave. Unit responding.</div>
+                    <div class="text-[#c0392b] text-[10px] mt-1">02:14 PM</div>
+                </div>
+                <div class="border-l-2 border-[#b45309] pl-3 py-1">
+                    <div class="text-[#e0e0e0] text-xs font-bold">EVIDENCE CHAIN BREAK</div>
+                    <div class="text-[#888] text-[10px] mt-1">Case #9921 - Blood sample compromised.</div>
+                    <div class="text-[#b45309] text-[10px] mt-1">11:30 AM</div>
+                </div>
+                <div class="border-l-2 border-[#16a34a] pl-3 py-1">
+                    <div class="text-[#e0e0e0] text-xs font-bold">WARRANT EXECUTED</div>
+                    <div class="text-[#888] text-[10px] mt-1">Suspect D. Miller apprehended.</div>
+                    <div class="text-[#16a34a] text-[10px] mt-1">09:15 AM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function initDashboardLogs() {
+        const logs = [
+            "System initialized...",
+            "Connecting to secure server [BG-BD-MAIN]...",
+            "Connection established. Latency: 12ms",
+            "User {{ request.user.username }} authenticated.",
+            "Loading case files...",
+            "Warning: Database latency high on sector 7.",
+            "New BOLO issued: ID W-1023",
+            "Backup completed."
+        ];
+        const container = document.getElementById('log-container');
+        
+        logs.forEach((log, index) => {
+            setTimeout(() => {
+                const div = document.createElement('div');
+                div.className = 'py-1 border-b border-[#1f1f1f] text-[#666] hover:text-[#888] hover:bg-[#1a1a1a] px-4';
+                const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+                div.innerHTML = `<span class="text-[#c0392b] mr-2">[${time}]</span> ${log}`;
+                container.prepend(div);
+            }, index * 300);
+        });
+    }
+    
+    // Run on load
+    document.addEventListener("DOMContentLoaded", initDashboardLogs);
+</script>
+{% endblock %}

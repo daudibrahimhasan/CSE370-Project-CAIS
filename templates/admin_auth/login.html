@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.A.S. | LOGIN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Share Tech Mono', monospace; }
+        .font-heading { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; }
+        .cas-input {
+            background-color: #111; border: 1px solid #2e2e2e;
+            color: #e0e0e0; transition: all 0.3s ease;
+        }
+        .cas-input:focus {
+            outline: none; border-color: #c0392b; box-shadow: 0 0 8px rgba(192, 57, 43, 0.3);
+        }
+        .bg-fingerprint {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%232e2e2e" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.131A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.2-2.85.5-4.171"/></svg>');
+            background-repeat: repeat;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex text-sm selection:bg-red-900 selection:text-white bg-[#050505] bg-fingerprint">
+
+    <!-- LOGIN SCREEN -->
+    <div class="fixed inset-0 z-50 flex items-center justify-center">
+        <div class="w-full max-w-md p-8 border border-[#333] bg-[#0a0a0a] shadow-2xl relative">
+            <div class="absolute top-0 left-0 w-full h-1 bg-[#c0392b]"></div>
+            
+            <div class="text-center mb-8">
+                <h1 class="font-heading text-5xl text-[#c0392b] mb-2">C.A.S.</h1>
+                <p class="text-[#888] tracking-widest text-xs uppercase">Criminal Analysis System v4.2</p>
+            </div>
+
+            {% if messages %}
+            <div class="mb-6">
+                {% for message in messages %}
+                <div class="p-3 bg-red-900 bg-opacity-30 border border-red-500 text-[#e0e0e0] text-xs text-center uppercase tracking-wider">
+                    Error: {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'admin_login' %}" class="space-y-6">
+                {% csrf_token %}
+                <div>
+                    <label class="block text-[#c0392b] text-xs uppercase mb-2 tracking-wider">Badge ID (Username)</label>
+                    <input type="text" name="username" class="w-full cas-input p-3 font-mono" placeholder="Enter ID" required>
+                </div>
+                <div>
+                    <label class="block text-[#c0392b] text-xs uppercase mb-2 tracking-wider">Access Key (Password)</label>
+                    <input type="password" name="password" class="w-full cas-input p-3 font-mono" placeholder="••••••••" required>
+                </div>
+                
+                <div class="flex items-center justify-between text-xs text-[#666]">
+                    <span>SECURE CONNECTION</span>
+                    <span class="text-[#16a34a]">ENCRYPTED</span>
+                </div>
+
+                <button type="submit" class="w-full bg-[#1a1a1a] border border-[#c0392b] text-[#c0392b] hover:bg-[#c0392b] hover:text-white py-3 uppercase tracking-widest transition-colors duration-300 font-bold">
+                    Initialize Session
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center text-[#444] text-xs uppercase">
+                UNAUTHORIZED ACCESS IS A FELONY<br>PENAL CODE 502
+            </div>
+        </div>
+    </div>
+</body>
+</html>

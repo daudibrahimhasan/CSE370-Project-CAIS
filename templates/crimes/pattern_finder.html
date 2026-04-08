@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block page_title %}CRIME PATTERN ANALYSIS{% endblock %}
+
+{% block content %}
+<div class="bg-[#1a1a1a] p-4 border-l-4 border-[#c0392b] mb-6">
+    <h3 class="text-[#e0e0e0] font-bold uppercase tracking-widest">Analysis Module: Method of Operation (M.O.)</h3>
+    <p class="text-[#888] text-xs mt-1 tracking-widest uppercase">Clustering active cases by behavioral signatures and entry methods.</p>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6 mb-8">
+    <form method="get" action="{% url 'pattern_finder' %}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="col-span-3">
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Search M.O. Database</label>
+            <input type="text" name="method" value="{{ search_query }}" placeholder="e.g. Broken window, Pickpocket..." class="cas-input w-full p-2 font-mono" autofocus>
+        </div>
+        <div class="flex items-end">
+            <button type="submit" class="w-full bg-[#c0392b] text-white p-2 uppercase text-xs font-bold hover:bg-[#e74c3c] tracking-widest transition-colors">
+                Initiate Scan
+            </button>
+        </div>
+    </form>
+</div>
+
+{% if request.GET.method %}
+    {% if results %}
+        <div class="space-y-8" id="patterns-container">
+            {% for group in results %}
+            <div class="border border-[#2e2e2e] bg-[#111]">
+                <div class="bg-[#c0392b] bg-opacity-10 p-3 border-b border-[#c0392b] flex justify-between items-center">
+                    <h4 class="text-[#c0392b] font-bold uppercase tracking-wider text-lg">"{{ group.method }}"</h4>
+                    <span class="text-[10px] text-[#c0392b] border border-[#c0392b] px-2 py-0.5 tracking-widest">{{ group.crimes|length }} LINKED CASES</span>
+                </div>
+                
+                <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-1">
+                        <div class="text-[#666] text-[10px] uppercase mb-1 tracking-widest">Profile Analysis</div>
+                        <p class="text-[#888] text-xs leading-relaxed uppercase border-l-2 border-[#333] pl-2">
+                            Pattern matching confirms {{ group.crimes|length }} incidents utilizing similar methodologies. Recommend cross-referencing suspect databases.
+                        </p>
+                    </div>
+                    
+                    <div class="md:col-span-2 bg-[#0a0a0a] p-3 border border-[#222]">
+                        <div class="text-[#666] text-[10px] uppercase mb-2 tracking-widest">Linked Incidents</div>
+                        
+                        {% for crime in group.crimes %}
+                        <div class="flex justify-between items-center py-2 border-b border-[#222] last:border-0 hover:bg-[#1a1a1a] px-2 transition-colors">
+                            <span class="text-[#c0392b] font-mono text-xs font-bold w-16">#{{ crime.crime_id }}</span>
+                            <span class="text-[#aaa] text-xs uppercase text-left flex-1 pl-2">{{ crime.location }}</span>
+                            <span class="text-[#666] text-xs font-mono w-40 text-right">{{ crime.date_time|date:"Y-m-d H:i" }}</span>
+                            <a href="{% url 'crime_detail' crime.crime_id %}" class="text-[#888] hover:text-[#fff] uppercase text-[10px] border border-[#333] px-2 ml-4">FILE</a>
+                        </div>
+                        {% endfor %}
+                        
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="bg-[#b45309] bg-opacity-10 border border-[#b45309] p-6 text-center">
+            <h3 class="font-heading text-2xl text-[#b45309] tracking-widest mb-1">NO MATCHES FOUND</h3>
+            <p class="text-[#888] text-xs uppercase tracking-widest">No intelligence found matching parameter: "{{ search_query }}"</p>
+        </div>
+    {% endif %}
+{% endif %}
+{% endblock %}

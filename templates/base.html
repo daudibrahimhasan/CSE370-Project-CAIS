@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}C.A.S. | CRIMINAL ANALYSIS SYSTEM{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-panel: #1a1a1a;
+            --border-color: #2e2e2e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888888;
+            --accent-red: #c0392b;
+            --accent-hover: #e74c3c;
+            --success: #16a34a;
+            --warning: #b45309;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden; /* App-like feel */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-red); }
+
+        /* Typography Overrides */
+        .font-heading { font-family: 'Bebas Neue', sans-serif; letter-spacing: 2px; }
+
+        /* Utilities */
+        .border-accent { border-color: var(--border-color); }
+        .text-accent-red { color: var(--accent-red); }
+        .bg-panel { background-color: var(--bg-panel); }
+
+        /* Animations */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(192, 57, 43, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(192, 57, 43, 0); }
+        }
+        .animate-pulse-red { animation: pulse-red 2s infinite; }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.1) 51%);
+            background-size: 100% 4px; pointer-events: none; z-index: 50;
+        }
+
+        /* Table Styles */
+        .cas-table th {
+            color: var(--accent-red); text-transform: uppercase; font-size: 0.85rem;
+            letter-spacing: 1px; border-bottom: 1px solid var(--border-color);
+        }
+        .cas-table td { border-bottom: 1px solid var(--border-color); color: var(--text-secondary); }
+        .cas-table tr:hover td { background-color: #1f1f1f; color: var(--text-primary); }
+
+        /* Inputs */
+        .cas-input {
+            background-color: #111; border: 1px solid var(--border-color);
+            color: var(--text-primary); transition: all 0.3s ease;
+        }
+        .cas-input:focus {
+            outline: none; border-color: var(--accent-red); box-shadow: 0 0 8px rgba(192, 57, 43, 0.3);
+        }
+
+        /* Navigation Active State */
+        .nav-item.active {
+            border-left: 2px solid var(--accent-red); background-color: rgba(192, 57, 43, 0.05); color: var(--text-primary);
+        }
+
+        /* Fingerprint Background for Login */
+        .bg-fingerprint {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%232e2e2e" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.131A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.2-2.85.5-4.171"/></svg>');
+            background-repeat: repeat;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="h-screen w-screen flex text-sm selection:bg-red-900 selection:text-white">
+
+    <!-- CRT Scanline Effect -->
+    <div class="scanline-overlay"></div>
+
+    <!-- MAIN APPLICATION -->
+    <div id="app-container" class="w-full h-full flex">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-[#111] border-r border-[#2e2e2e] flex flex-col flex-shrink-0 z-20">
+            <div class="p-6 border-b border-[#2e2e2e]">
+                <h1 class="font-heading text-3xl text-[#c0392b] tracking-widest"><a href="{% url 'dashboard' %}">C.A.S.</a></h1>
+                <div class="text-[#666] text-[10px] uppercase mt-1 flex justify-between">
+                    <span>System Online</span>
+                    <span id="clock">00:00:00</span>
+                </div>
+            </div>
+
+            <nav class="flex-1 py-6 space-y-1">
+                <a href="{% url 'dashboard' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <span class="mr-3">></span> Dashboard
+                </a>
+                <a href="{% url 'bolo_list' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'bolo_list' %}active{% endif %}">
+                    <span class="mr-3">></span> Active BOLOs
+                </a>
+                <a href="{% url 'case_status_list' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'case_status_list' %}active{% endif %}">
+                    <span class="mr-3">></span> Case Records
+                </a>
+                <a href="{% url 'criminal_list' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'criminal_list' %}active{% endif %}">
+                    <span class="mr-3">></span> Subjects
+                </a>
+                <a href="{% url 'repeat_offenders' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'repeat_offenders' %}active{% endif %}">
+                    <span class="mr-3">></span> Repeat Offenders
+                </a>
+                <a href="{% url 'pattern_finder' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'pattern_finder' %}active{% endif %}">
+                    <span class="mr-3">></span> Crime Patterns
+                </a>
+                <a href="{% url 'officer_search' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'officer_search' %}active{% endif %}">
+                    <span class="mr-3">></span> Personnel
+                </a>
+                <a href="{% url 'warrant_tracking' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'warrant_tracking' %}active{% endif %}">
+                    <span class="mr-3">></span> Warrant Tracking
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-[#2e2e2e] flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-[#2e2e2e] flex items-center justify-center text-[#c0392b] font-bold">{{ request.user.username|make_list|first|upper }}</div>
+                    <div>
+                        <div class="text-xs text-[#e0e0e0] uppercase">{{ request.user.username }}</div>
+                        <div class="text-[10px] text-[#666] uppercase">SYS ADMIN</div>
+                    </div>
+                </div>
+                {% if request.user.is_authenticated %}
+                <form action="{% url 'admin_logout' %}" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="text-xs text-[#c0392b] hover:text-white border border-[#c0392b] px-2 py-1 rounded">LOGOUT</button>
+                </form>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-[#0a0a0a]">
+            
+            <!-- Top Bar -->
+            <header class="h-16 border-b border-[#2e2e2e] flex items-center justify-between px-8 bg-[#111]">
+                <h2 id="page-title" class="font-heading text-2xl text-[#c0392b] tracking-wide">{% block page_title %}SYSTEM_{% endblock %}</h2>
+            </header>
+
+            <!-- Feedback Messages -->
+            {% if messages %}
+            <div class="absolute top-16 right-0 m-4 z-50 w-72">
+                {% for message in messages %}
+                <div class="bg-[#1a1a1a] border-l-4 border-{% if message.tags == 'error' %}red-600{% elif message.tags == 'success' %}green-600{% else %}blue-600{% endif %} pl-4 py-2 pr-4 shadow-lg mb-2">
+                    <p class="text-sm font-semibold text-white">{{ message }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Content Scroll Area -->
+            <div class="flex-1 overflow-y-auto p-8 relative" id="content-area">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Initialization Scripts -->
+    <script>
+        function startClock() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', { hour12: false });
+            }, 1000);
+        }
+        startClock();
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
