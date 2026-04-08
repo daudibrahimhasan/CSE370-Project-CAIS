@@ -256,7 +256,7 @@ GROUP BY method_used
 ORDER BY total_crimes DESC;
 
 -- ============================================================
--- Seed Data (Fake Data for Testing)
+-- Seed Data (One Piece Themed)
 -- ============================================================
 
 -- ============================================================
@@ -279,20 +279,20 @@ INSERT INTO Team (team_name) VALUES
 ('Robbery');
 
 -- ============================================================
--- OFFICERS
+-- OFFICERS (Marines)
 -- ============================================================
 
 INSERT INTO Officer (name, rank, badge_number, team_id) VALUES
-('James Carter',    'Detective',    'B1001', 1),
-('Maria Lopez',     'Sergeant',     'B1002', 2),
-('David Kim',       'Officer',      'B1003', 3),
-('Sarah Thompson',  'Detective',    'B1004', 1),
-('Robert Hayes',    'Lieutenant',   'B1005', 2),
-('Emily Nguyen',    'Officer',      'B1006', 4),
-('Marcus Brown',    'Sergeant',     'B1007', 5),
-('Linda Patel',     'Detective',    'B1008', 3),
-('Chris Walker',    'Officer',      'B1009', 4),
-('Angela Foster',   'Lieutenant',   'B1010', 1);
+('Sengoku',             'Detective',    'B1001', 1),
+('Monkey D. Garp',      'Sergeant',     'B1002', 2),
+('Aokiji',              'Officer',      'B1003', 3),
+('Sakazuki',            'Detective',    'B1004', 1),
+('Borsalino',           'Lieutenant',   'B1005', 2),
+('Smoker',              'Officer',      'B1006', 4),
+('Issho',               'Sergeant',     'B1007', 5),
+('Coby',                'Detective',    'B1008', 3),
+('Tashigi',             'Officer',      'B1009', 4),
+('Tsuru',               'Lieutenant',   'B1010', 1);
 
 -- ============================================================
 -- SHIFTS
@@ -311,32 +311,144 @@ INSERT INTO Shift (officer_id, date_worked, hours) VALUES
 (9, '2024-01-16', 8.0);
 
 -- ============================================================
--- CRIMINALS
+-- CRIMINALS (Pirates — 52 total)
+-- ============================================================
+-- Most dangerous flagged as repeat offenders:
+-- Yonko, top commanders, notorious Warlords
 -- ============================================================
 
 INSERT INTO Criminal (name, age, date_of_birth, gender, physical_description, is_repeat_offender) VALUES
-('Tony Deluca',         34, '1990-03-15', 'Male',   'Scar on left cheek, snake tattoo on neck',         TRUE),
-('Marcus "Ghost" Reed', 29, '1995-07-22', 'Male',   'Teardrop tattoo under right eye, bald',            TRUE),
-('Elena Voss',          41, '1983-11-05', 'Female', 'Red hair, rose tattoo on left wrist',              FALSE),
-('Jerome "J-Dog" Hill', 26, '1998-01-30', 'Male',   'Tall, thin build, cross tattoo on forearm',        TRUE),
-('Sandra Wu',           38, '1986-09-14', 'Female', 'Short, glasses, no visible tattoos',               FALSE),
-('Ray "Blade" Torres',  32, '1992-06-18', 'Male',   'Stocky build, barbed wire tattoo around bicep',    TRUE),
-('Kevin Nash',          45, '1979-12-01', 'Male',   'Greying hair, scar on right hand',                 FALSE),
-('Diane Mercer',        27, '1997-04-25', 'Female', 'Blue eyes, butterfly tattoo on shoulder',          FALSE);
+-- Yonko (4 most powerful pirates)
+('Edward "Whitebeard" Newgate',     72, '1951-04-06', 'Male',   'Enormous build, white mustache, bisento scar across chest, strongest man alive',                                      TRUE),
+('Kaido of the Beasts',              59, '1964-05-01', 'Male',   'Massive frame, spiked club, dragon tattoo covering left arm, indestructible body',                                     TRUE),
+('Charlotte "Big Mom" Linlin',       68, '1955-02-15', 'Female', 'Enormous build, pink hair, homura earrings, candy cane weapon Prometheus and Napoleon',                                TRUE),
+('Red-Haired Shanks',                39, '1984-03-09', 'Male',   'Red hair, missing left arm, three scar marks over left eye, conquerors haki user',                                     TRUE),
+('Marshall D. "Blackbeard" Teach',   40, '1983-08-22', 'Male',   'Large build, black beard, multiple missing teeth, dual pistols, two devil fruit powers',                               TRUE),
+-- Whitebeard Pirates commanders
+('Marco the Phoenix',                43, '1980-10-05', 'Male',   'Blonde hair, blue flames, phoenix tattoo on back, first division commander',                                           TRUE),
+('Portgas D. Ace',                   20, '2003-01-01', 'Male',   'Freckles, fire tattoo on back reading ASCE, cowboy hat, second division commander',                                    TRUE),
+('Vista',                            47, '1976-07-14', 'Male',   'Flower-shaped hat, dual swords, handlebar mustache, fifth division commander',                                         FALSE),
+('Jozu',                             45, '1978-06-20', 'Male',   'Diamond-encrusted skin, massive build, third division commander',                                                      FALSE),
+-- Beast Pirates (Kaido crew)
+('Queen the Plague',                 56, '1967-09-09', 'Male',   'Long hair in bun, cyborg arm, mammoth transformation marks, biological weapon specialist',                             TRUE),
+('King the Wildfire',                47, '1976-03-28', 'Male',   'All-black mask and wings, extremely tall, lunarian tribal marks, only known lunarian survivor',                        TRUE),
+('Jack the Drought',                 35, '1988-07-03', 'Male',   'Pale skin, large tusks, metal jaw implant, blonde braid, destroyed entire countries',                                  TRUE),
+('Ulti',                             22, '2001-11-18', 'Female', 'Horned headgear, short blue hair, dinosaur scale tattoo on neck, flying-six member',                                   FALSE),
+('Page One',                         20, '2003-09-22', 'Male',   'Spinosaurus features when transformed, spiked hair, flying-six member',                                                FALSE),
+-- Big Mom Pirates commanders
+('Charlotte Katakuri',               48, '1975-05-10', 'Male',   'Scarred mouth hidden by scarf, tallest of siblings, mochi body, never lost a battle before Luffy',                    TRUE),
+('Charlotte Cracker',                45, '1978-01-28', 'Male',   'Biscuit-armor exterior, thin frame underneath, rapier sword, minister of biscuits',                                   TRUE),
+('Charlotte Smoothie',               35, '1988-09-28', 'Female', 'Half-giant build, braided green hair, twin swords, wrings moisture from living beings',                                FALSE),
+('Charlotte Perospero',              50, '1973-03-11', 'Male',   'Candy-cane staff, lollipop in mouth, tall lanky frame, eldest sibling of the Charlotte family',                        FALSE),
+('Charlotte Oven',                   42, '1981-06-23', 'Male',   'Reddish skin, enormous build, heat-based abilities, minister of browned rice',                                         FALSE),
+-- Blackbeard Pirates
+('Shiryu of the Rain',               41, '1982-05-30', 'Male',   'Rain coat, long sword, glasses, emotionless expression, former impel down chief jailer',                              TRUE),
+('Van Augur the Supersonic',         28, '1995-08-10', 'Male',   'Long black cloak, sniper rifle, skeletal face paint, never misses a target',                                           TRUE),
+('Laffitte',                         34, '1989-12-04', 'Male',   'Top hat, white suit, bird wings on back, walking cane, former police officer turned pirate',                           FALSE),
+('Doc Q',                            38, '1985-11-11', 'Male',   'Sickly pale complexion, rides skeletal horse, disease-based devil fruit, explosive apples',                            FALSE),
+-- Worst Generation (11 Supernovas)
+('Monkey D. Luffy',                  19, '2004-05-05', 'Male',   'Straw hat, red vest, scar under left eye, rubber-like agility, son of Revolutionary Dragon',                          TRUE),
+('Roronoa Zoro',                     21, '2002-11-11', 'Male',   'Green hair, three earrings left ear, three swords including black blade, scar over left eye',                          TRUE),
+('Trafalgar D. Water Law',           26, '1997-10-06', 'Male',   'Spotted hat, tattoos covering hands and neck, nodachi sword, room ability to rearrange matter',                        TRUE),
+('Eustass "Captain" Kid',            23, '2000-01-10', 'Male',   'Red hair, goggles, mechanical prosthetic left arm, magnetic abilities, most bounty pre-timeskip',                      TRUE),
+('Killer',                           23, '2000-02-02', 'Male',   'White mask, blonde hair, dual scythe blades on wrists, Kid pirates first mate',                                        TRUE),
+('Basil Hawkins',                    29, '1994-09-09', 'Male',   'Long blonde hair, voodoo straw doll, tarot card motifs, transfers damage to others',                                   FALSE),
+('Scratchmen Apoo',                  29, '1994-03-19', 'Male',   'Dreadlocks, musical instrument body, skeletal face paint, sound-based attacks',                                        FALSE),
+('Urouge the Mad Monk',              47, '1976-01-21', 'Male',   'Wings on back, large monk staff, heavyset build, monk robes, grows stronger from damage',                              FALSE),
+('X Drake',                          33, '1990-10-24', 'Male',   'Tall, military coat, anchor saber, dinosaur transformation, secret SWORD marine agent',                                FALSE),
+('Capone "Gang" Bege',               38, '1985-01-24', 'Male',   'Short stature, three-piece suit, castle body, houses entire crew inside himself',                                      FALSE),
+-- Former Warlords (Shichibukai)
+('Dracule "Hawkeye" Mihawk',         43, '1980-03-09', 'Male',   'Hawk-like yellow eyes, black cape, cross-shaped necklace, black blade Yoru, greatest swordsman',                      TRUE),
+('Sir Crocodile',                    46, '1977-09-05', 'Male',   'Hook for right hand, scarred face, long coat, cigar always lit, logia sand powers',                                    TRUE),
+('Donquixote Doflamingo',            41, '1982-10-23', 'Male',   'Feathered pink coat, sunglasses, long blonde hair, string devil fruit, former world noble',                            TRUE),
+('Boa Hancock',                      31, '1992-09-02', 'Female', 'Extremely tall, black hair to waist, snake earrings, Gorgon symbol on back, petrification ability',                   FALSE),
+('Bartholomew Kuma',                 47, '1976-12-09', 'Male',   'Massive cyborg frame, Bible always in hand, paw-print symbol on palms, pacifista model',                              TRUE),
+('Gecko Moria',                      50, '1973-09-06', 'Male',   'Pale skin, stitched face, enormous pale cross-shaped tattoo, controls army of zombies',                                TRUE),
+('Jinbe',                            46, '1977-04-02', 'Male',   'Whale shark fishman, blue skin, large build, traditional fishman karate robes, helmsman',                              FALSE),
+-- Roger Pirates era
+('Silvers Rayleigh',                 78, '1945-05-13', 'Male',   'Silver hair, round glasses, scar over right eye, old but impossibly powerful, dark king',                             TRUE),
+('Scopper Gaban',                    54, '1969-07-07', 'Male',   'Axe weapons, scruffy hair, tattoos on both arms, Roger pirates officer',                                               FALSE),
+-- Other notable pirates
+('Nami',                             20, '2003-07-03', 'Female', 'Orange hair, tattoo of pinwheel and mikan on left shoulder, climate baton, ex-Arlong navigator',                      TRUE),
+('Nico Robin',                       28, '1995-02-06', 'Female', 'Black hair, blue eyes, Poneglyphs tattoos on arms, can sprout limbs anywhere, only Ohara survivor',                   TRUE),
+('Usopp',                            19, '2004-04-01', 'Male',   'Long nose, curly black hair, goggles, slingshot weapon, lies constantly as cover',                                     FALSE),
+('Vinsmoke Sanji',                   21, '2002-03-02', 'Male',   'Blonde hair covering right eye, black suit, curly eyebrow, leg-based fighter, Vinsmoke royalty',                      TRUE),
+('Yamato',                           28, '1995-11-03', 'Female', 'Long white hair, oni horns, traditional Japanese robes, kanabo club, Kaido daughter',                                 FALSE),
+('Carrot',                           21, '2002-05-24', 'Female', 'White rabbit ears, orange eyes, bunny features, electro ability, Sulong moon transformation',                         FALSE),
+('Buggy the Clown',                  39, '1984-08-08', 'Male',   'Red nose, blue hair divided by line, clown makeup, detachable body parts, surprisingly feared',                       TRUE),
+('Miss All Sunday',                  26, '1998-02-06', 'Female', 'Alias used while with Baroque Works',                                                                                  FALSE),
+('Arlong',                           41, '1982-05-03', 'Male',   'Sawshark fishman, blue skin, massive serrated nose, enslaved Cocoyasi village for years',                             TRUE),
+('Caesar Clown',                     46, '1977-04-09', 'Male',   'Mad scientist appearance, large head, gas mask, lab coat stained with chemicals, WMD creator',                        TRUE),
+('Vergo',                            41, '1982-10-06', 'Male',   'Tall, business attire, bamboo staff, food always stuck to face, Doflamingo spy in marines',                           TRUE),
+('Monet',                            25, '1998-01-01', 'Female', 'Harpy wings, snow-white feathers, glasses, Doflamingo tattoo on wrist, logia snow powers',                            FALSE),
+('Trebol',                           52, '1971-03-18', 'Male',   'Disgusting mucus-covered body, long cloak, stick weapon, Beta Beta no Mi sticky substance',                           TRUE);
 
 -- ============================================================
 -- NICKNAMES
 -- ============================================================
 
 INSERT INTO Nickname (criminal_id, alias) VALUES
-(1, 'The Cobra'),
-(1, 'Tony D'),
-(2, 'Ghost'),
-(2, 'The Shadow'),
-(4, 'J-Dog'),
-(4, 'Jerome the Fox'),
-(6, 'Blade'),
-(6, 'The Butcher');
+-- Whitebeard
+(1,  'The Strongest Man in the World'),
+(1,  'Pops'),
+-- Kaido
+(2,  'King of the Beasts'),
+(2,  'The Strongest Creature'),
+-- Big Mom
+(3,  'Big Mom'),
+(3,  'Mama'),
+-- Shanks
+(4,  'Red-Hair'),
+(4,  'Lucky Man'),
+-- Blackbeard
+(5,  'Blackbeard'),
+(5,  'The Dark King Killer'),
+-- Marco
+(6,  'Marco the Phoenix'),
+-- Ace
+(7,  'Fire Fist Ace'),
+(7,  'Portgas'),
+-- King
+(11, 'The Wildfire'),
+(11, 'Last Lunarian'),
+-- Jack
+(12, 'Jack the Drought'),
+-- Katakuri
+(15, 'Charlotte Katakuri'),
+(15, 'The Sweet Commander'),
+-- Luffy
+(24, 'Straw Hat Luffy'),
+(24, 'Fifth Emperor'),
+-- Zoro
+(25, 'Pirate Hunter Zoro'),
+-- Law
+(26, 'The Surgeon of Death'),
+-- Kid
+(27, 'Captain Kid'),
+-- Mihawk
+(35, 'Hawkeye'),
+(35, 'Greatest Swordsman Alive'),
+-- Crocodile
+(36, 'Desert King'),
+(36, 'Mr. Zero'),
+-- Doflamingo
+(37, 'Heavenly Demon'),
+(37, 'Joker'),
+-- Rayleigh
+(41, 'Dark King'),
+(41, 'The Dark King Rayleigh'),
+-- Robin
+(43, 'Devil Child'),
+(43, 'Light of the Revolution'),
+-- Buggy
+(48, 'Buggy the Star Clown'),
+-- Arlong
+(49, 'Saw-Tooth Arlong'),
+-- Caesar
+(50, 'Gas Tank'),
+(50, 'Master'),
+-- Trebol
+(52, 'The Sticky King');
 
 -- ============================================================
 -- VICTIMS
@@ -388,21 +500,23 @@ INSERT INTO Crime (description, method_used, location, city, latitude, longitude
 -- ============================================================
 
 INSERT INTO Evidence (crime_id, type, description) VALUES
-(1, 'Firearm',      'Black 9mm handgun found near dumpster'),
-(1, 'CCTV Footage', 'Store security camera footage of suspect'),
-(2, 'Crowbar',      'Used to force open back window'),
-(3, 'Narcotics',    '2kg of cocaine in sealed bags'),
-(3, 'Mobile Phone', 'Burner phone with transaction records'),
-(4, 'Firearm',      'Pistol recovered at scene'),
-(5, 'Laptop',       'Laptop with phishing software installed'),
-(6, 'Knife',        '6 inch blade with fingerprints'),
-(7, 'Crowbar',      'Found at warehouse entrance'),
-(8, 'Narcotics',    '5kg of heroin in checked luggage'),
-(9, 'Laptop',       'Used to send phishing emails'),
-(10, 'Firearm',     'Sawn-off shotgun left at scene');
+(1,  'Firearm',       'Black 9mm handgun found near dumpster'),
+(1,  'CCTV Footage',  'Store security camera footage of suspect'),
+(2,  'Crowbar',       'Used to force open back window'),
+(3,  'Narcotics',     '2kg of cocaine in sealed bags'),
+(3,  'Mobile Phone',  'Burner phone with transaction records'),
+(4,  'Firearm',       'Pistol recovered at scene'),
+(5,  'Laptop',        'Laptop with phishing software installed'),
+(6,  'Knife',         '6 inch blade with fingerprints'),
+(7,  'Crowbar',       'Found at warehouse entrance'),
+(8,  'Narcotics',     '5kg of heroin in checked luggage'),
+(9,  'Laptop',        'Used to send phishing emails'),
+(10, 'Firearm',       'Sawn-off shotgun left at scene');
 
 -- ============================================================
 -- INVESTIGATES (Officer <-> Crime)
+-- officer_id: 1=Sengoku, 2=Garp, 3=Aokiji, 4=Sakazuki, 5=Borsalino
+--             6=Smoker,  7=Issho, 8=Coby,   9=Tashigi, 10=Tsuru
 -- ============================================================
 
 INSERT INTO Investigates (officer_id, crime_id, date_worked) VALUES
@@ -419,23 +533,26 @@ INSERT INTO Investigates (officer_id, crime_id, date_worked) VALUES
 
 -- ============================================================
 -- CRIME INVOLVEMENT (Criminal <-> Crime)
+-- criminal_id references:
+--  2=Kaido, 5=Blackbeard, 11=King, 15=Katakuri,
+-- 24=Luffy, 36=Crocodile, 37=Doflamingo, 50=Caesar
 -- ============================================================
 
 INSERT INTO CrimeInvolvement (criminal_id, crime_id) VALUES
-(1, 1),
-(1, 4),
-(1, 10),
-(2, 2),
-(2, 7),
-(3, 5),
-(3, 9),
-(4, 3),
-(4, 8),
-(5, 5),
-(6, 6),
-(6, 4),
-(7, 10),
-(8, 9);
+(2,  1),   -- Kaido -> armed robbery
+(2,  4),   -- Kaido -> carjacking
+(2,  10),  -- Kaido -> bank robbery
+(5,  2),   -- Blackbeard -> break-in
+(5,  7),   -- Blackbeard -> warehouse robbery
+(37, 5),   -- Doflamingo -> online fraud
+(37, 9),   -- Doflamingo -> phishing ring
+(36, 3),   -- Crocodile -> drug deal
+(36, 8),   -- Crocodile -> drug trafficking
+(50, 5),   -- Caesar -> online fraud (WMD formula leak)
+(11, 6),   -- King -> assault
+(11, 4),   -- King -> carjacking
+(1,  10),  -- Whitebeard -> bank robbery
+(49, 7);   -- Arlong -> warehouse robbery
 
 -- ============================================================
 -- CRIME VICTIM
@@ -458,25 +575,28 @@ INSERT INTO CrimeVictim (victim_id, crime_id) VALUES
 -- ============================================================
 
 INSERT INTO Warrant (criminal_id, issue_date, status) VALUES
-(1, '2024-01-06', 'Active'),
-(2, '2024-01-09', 'Active'),
-(4, '2024-01-10', 'Active'),
-(6, '2024-01-16', 'Active'),
-(3, '2023-11-01', 'Cancelled'),
-(7, '2024-01-24', 'Active'),
-(5, '2023-09-15', 'Cancelled');
+(2,  '2024-01-06', 'Active'),    -- Kaido
+(5,  '2024-01-09', 'Active'),    -- Blackbeard
+(36, '2024-01-10', 'Active'),    -- Crocodile
+(11, '2024-01-16', 'Active'),    -- King
+(37, '2023-11-01', 'Cancelled'), -- Doflamingo (warrant cancelled - bribed officials)
+(1,  '2024-01-24', 'Active'),    -- Whitebeard
+(49, '2023-09-15', 'Cancelled'), -- Arlong
+(15, '2024-01-20', 'Active'),    -- Katakuri
+(50, '2024-01-22', 'Active'),    -- Caesar Clown
+(24, '2024-01-15', 'Active');    -- Luffy
 
 -- ============================================================
 -- INTERROGATIONS
 -- ============================================================
 
 INSERT INTO Interrogation (officer_id, criminal_id, date, notes) VALUES
-(1, 1,  '2024-01-07 10:00:00', 'Suspect denied involvement. Inconsistent alibi about location on night of robbery.'),
-(4, 2,  '2024-01-10 14:00:00', 'Refused to answer questions. Lawyer present throughout.'),
-(2, 4,  '2024-01-11 09:30:00', 'Admitted to being near the park but denied drug involvement.'),
-(8, 3,  '2024-01-14 11:00:00', 'Cooperative. Provided names of two associates for further investigation.'),
-(5, 6,  '2024-01-16 15:00:00', 'Aggressive behavior. Denied all charges. No useful information obtained.'),
-(1, 7,  '2024-01-24 10:00:00', 'Claimed he was coerced. Willing to cooperate in exchange for reduced charges.');
+(1,  2,  '2024-01-07 10:00:00', 'Kaido refused to cooperate. Destroyed the interrogation table. Inconsistent alibi about whereabouts on night of robbery.'),
+(4,  5,  '2024-01-10 14:00:00', 'Blackbeard refused to answer questions. Laughed throughout. No lawyer present — he doesnt believe he needs one.'),
+(2,  36, '2024-01-11 09:30:00', 'Crocodile admitted to being in the area but denied drug involvement. Extremely calm, suspicious composure.'),
+(8,  37, '2024-01-14 11:00:00', 'Doflamingo smiled the entire time. Provided no useful information but mentioned he has friends in high places.'),
+(5,  11, '2024-01-16 15:00:00', 'King was aggressive. Broke the cuffs. Denied all charges. No useful information obtained. Extreme threat level noted.'),
+(1,  24, '2024-01-24 10:00:00', 'Luffy claimed he just wanted to find treasure. Willing to cooperate if given meat. Surprisingly honest demeanor.');
 
 -- ============================================================
 -- CASES
