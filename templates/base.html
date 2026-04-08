@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}C.A.S. | CRIMINAL ANALYSIS SYSTEM{% endblock %}</title>
+    <title>{% block title %}C.A.I.S. | CRIMINAL ANALYSIS SYSTEM{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,7 +101,7 @@
         <!-- Sidebar -->
         <aside class="w-64 bg-[#111] border-r border-[#2e2e2e] flex flex-col flex-shrink-0 z-20">
             <div class="p-6 border-b border-[#2e2e2e]">
-                <h1 class="font-heading text-3xl text-[#c0392b] tracking-widest"><a href="{% url 'dashboard' %}">C.A.S.</a></h1>
+                <h1 class="font-heading text-3xl text-[#c0392b] tracking-widest"><a href="{% url 'dashboard' %}">C.A.I.S.</a></h1>
                 <div class="text-[#666] text-[10px] uppercase mt-1 flex justify-between">
                     <span>System Online</span>
                     <span id="clock">00:00:00</span>
@@ -132,6 +132,9 @@
                 </a>
                 <a href="{% url 'warrant_tracking' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'warrant_tracking' %}active{% endif %}">
                     <span class="mr-3">></span> Warrant Tracking
+                </a>
+                <a href="{% url 'criminal_registry' %}" class="block nav-item w-full text-left px-6 py-3 text-[#888] hover:text-[#e0e0e0] hover:bg-[#1a1a1a] transition-all uppercase text-xs tracking-wider {% if request.resolver_match.url_name == 'criminal_registry' %}active{% endif %}">
+                    <span class="mr-3">></span> Criminal Registry
                 </a>
             </nav>
 
