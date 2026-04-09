@@ -8,16 +8,6 @@ A robust, law-enforcement web application built to track criminal profiles, mana
 
 CAIS helps police departments and administrators organize officer squads, track repeat offenders, match crime patterns (M.O.), and maintain secure chains of evidence—ensuring public safety and more efficient investigations.
 
-### 📸 Project Preview
-![Login System](public/1.png)
-![System Dashboard](public/2.png)
-![Active BOLOs](public/3.png)
-![Case Management](public/4.png)
-![Criminal Registry](public/5.png)
-![Crime Patterns](public/6.png)
-![System Personnel](public/7.png)
-![Warrant Tracking](public/8.png)
-
 - 🗺️ **Crime Pattern Finder** (links crimes with the same method/trick)
 
 - 📚 **Repeat Offender Alerts** (automatically flags high-frequency criminals)
@@ -57,3 +47,14 @@ CAIS helps police departments and administrators organize officer squads, track 
 - **Daud Ibrahim Hassan**
 - **Abir Enam**
 - **Ocean Biswas**
+
+### 📸 Project Preview
+
+![Login System](public/1.png)
+![System Dashboard](public/2.png)
+![Active BOLOs](public/3.png)
+![Case Management](public/4.png)
+![Criminal Registry](public/5.png)
+![Crime Patterns](public/6.png)
+![System Personnel](public/7.png)
+![Warrant Tracking](public/8.png)
