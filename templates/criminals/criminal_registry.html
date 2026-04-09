@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block page_title %}CRIMINAL REGISTRY{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-end border-b border-[#2e2e2e] pb-4">
+    <div>
+        <h3 class="text-[#e0e0e0] text-lg uppercase tracking-widest">Master Criminal Index</h3>
+        <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">A comprehensive registry linking subjects to their recorded criminal offences.</p>
+    </div>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden mb-12">
+    <table class="w-full text-left cas-table">
+        <thead class="bg-[#111]">
+            <tr>
+                <th class="p-4 tracking-widest">Subject Name</th>
+                <th class="p-4 tracking-widest">Age/Gender</th>
+                <th class="p-4 tracking-widest">Associated Offences</th>
+                <th class="p-4 tracking-widest">Profile Status</th>
+            </tr>
+        </thead>
+        <tbody class="text-xs">
+            {% for criminal in criminals %}
+            <tr>
+                <td class="p-4">
+                    <a href="{% url 'criminal_profile' criminal.criminal_id %}" class="text-[#e0e0e0] hover:text-[#c0392b] hover:underline uppercase font-bold tracking-wider">
+                        {{ criminal.name }}
+                    </a>
+                </td>
+                <td class="p-4 text-[#888] font-mono">
+                    {{ criminal.age }}Y / {{ criminal.gender|upper }}
+                </td>
+                <td class="p-4 text-[#aaa] font-mono italic">
+                    {% for crime in criminal.crimes_involved.all %}
+                        {{ crime.description }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        <span class="text-[#444]">NO RECORDS FOUND</span>
+                    {% endfor %}
+                </td>
+                <td class="p-4 border-l border-[#2e2e2e]">
+                    {% if criminal.is_repeat_offender %}
+                    <span class="bg-[#c0392b]/20 text-[#c0392b] border border-[#c0392b] px-2 py-1 text-[10px] font-bold uppercase tracking-tighter">
+                        Repeat Offender
+                    </span>
+                    {% else %}
+                    <span class="text-[#888] text-[10px] uppercase tracking-widest">Standard Profile</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="p-8 text-center text-[#888] tracking-widest uppercase">
+                    The database is currently clear of recorded criminal subjects.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

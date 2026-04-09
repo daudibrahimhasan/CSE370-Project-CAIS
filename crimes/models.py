@@ -27,6 +27,9 @@ class Crime(models.Model):
     description = models.TextField()
     method_used = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
+    city = models.CharField(max_length=150, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     date_time = models.DateTimeField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Open')
     

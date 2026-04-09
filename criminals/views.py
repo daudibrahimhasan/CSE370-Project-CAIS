@@ -64,3 +64,8 @@ def repeat_offenders(request):
         repeat_offenders_list = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
     return render(request, 'criminals/repeat_offenders.html', {'offenders': repeat_offenders_list})
+
+def criminal_registry(request):
+    # Requirement: A section called "Criminal Registry" that shows all criminals and their offences.
+    criminals = Criminal.objects.prefetch_related('crimes_involved').all().order_by('name')
+    return render(request, 'criminals/criminal_registry.html', {'criminals': criminals})
