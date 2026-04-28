@@ -1,18 +1,21 @@
-from django.shortcuts import render
 from django.db import connection
-from .models import Officer, Shift, Team
+from django.shortcuts import redirect, render
+
+
+def _dictfetchall(cursor):
+    columns = [col[0] for col in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor.fetchall()]
+
 
 def officer_search(request):
-    # Feature 5: Search officers by rank or team. A search/filter page with a dropdown for rank and team. 
-    # SQL uses WHERE rank = and/or team_id =.
-    
+    if not request.session.get('user_id'):
+        return redirect('admin_login')
+
     rank_query = request.GET.get('rank', '')
     team_query = request.GET.get('team', '')
-    
-    officers = []
-    
-    # We will use raw SQL to satisfy "SQL uses WHERE rank = and/or team_id ="
+
     with connection.cursor() as cursor:
+        # Officer search page query: officer list with optional rank/team filters.
         query = """
             SELECT o.officer_id, o.name, o.rank, o.badge_number, t.team_name
             FROM officers_officer o
@@ -26,25 +29,59 @@ def officer_search(request):
         if team_query:
             query += " AND o.team_id = %s"
             params.append(team_query)
-            
         cursor.execute(query, params)
-        columns = [col[0] for col in cursor.description]
-        officers = [dict(zip(columns, row)) for row in cursor.fetchall()]
-        
-    teams = Team.objects.all()
-    # Get unique ranks for dropdown
-    # Use ORM just to populate the form options
-    ranks = Officer.objects.values_list('rank', flat=True).distinct()
-    
+        officers = _dictfetchall(cursor)
+
+        # Officer search page query: team dropdown options.
+        cursor.execute(
+            """
+            SELECT team_id, team_name
+            FROM officers_team
+            ORDER BY team_name
+            """
+        )
+        teams = _dictfetchall(cursor)
+
+        # Officer search page query: distinct rank dropdown options.
+        cursor.execute(
+            """
+            SELECT DISTINCT rank
+            FROM officers_officer
+            ORDER BY rank
+            """
+        )
+        ranks = [row['rank'] for row in _dictfetchall(cursor)]
+
     return render(request, 'officers/officer_search.html', {
         'officers': officers,
         'teams': teams,
         'ranks': ranks,
         'selected_rank': rank_query,
-        'selected_team': team_query
+        'selected_team': team_query,
     })
 
+
 def shift_tracking(request):
-    # Feature 3: Officer shift tracking: A simple page showing which officer worked on which date, pulled from Shift table.
-    shifts = Shift.objects.select_related('officer').all().order_by('-date')
+    if not request.session.get('user_id'):
+        return redirect('admin_login')
+
+    with connection.cursor() as cursor:
+        # Shift tracking page query: shifts joined with officer details.
+        cursor.execute(
+            """
+            SELECT
+                s.shift_id,
+                s.date,
+                s.hours_worked,
+                o.officer_id,
+                o.name AS officer_name,
+                o.rank,
+                o.badge_number
+            FROM officers_shift s
+            JOIN officers_officer o ON s.officer_id = o.officer_id
+            ORDER BY s.date DESC, s.shift_id DESC
+            """
+        )
+        shifts = _dictfetchall(cursor)
+
     return render(request, 'officers/shift_tracking.html', {'shifts': shifts})

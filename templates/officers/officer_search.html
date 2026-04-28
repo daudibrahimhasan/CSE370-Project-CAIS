@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block page_title %}SYSTEM PERSONNEL{% endblock %}
+{% block page_title %}SYSTEM OFFICERS{% endblock %}
 
 {% block content %}
 <div class="mb-6 border-b border-[#2e2e2e] pb-4">
     <h3 class="text-[#e0e0e0] uppercase tracking-widest text-lg">Officer Roster & Search</h3>
-    <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Filter active personnel by rank or assigned division.</p>
+    <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Filter active officers by rank or assigned division.</p>
 </div>
 
 <!-- Feature 5: Search officers by rank or team -->
@@ -40,6 +40,57 @@
     </form>
 </div>
 
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Team</h4>
+        <form method="post" action="{% url 'officer_search' %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="add_team">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Team Name</label>
+                <input type="text" name="team_name" class="cas-input w-full p-2" placeholder="Narcotics" required>
+            </div>
+            <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase text-xs tracking-widest font-bold">Add Team</button>
+        </form>
+    </div>
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Officer</h4>
+        <form method="post" action="{% url 'officer_search' %}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="add_officer">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Name</label>
+                <input type="text" name="name" class="cas-input w-full p-2" required>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Rank</label>
+                <select name="rank_name" class="cas-input w-full p-2" required>
+                    <option value="">-- Select Rank --</option>
+                    {% for rank in ranks %}
+                    <option value="{{ rank }}">{{ rank }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Badge Number</label>
+                <input type="text" name="badge_number" class="cas-input w-full p-2" required>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Assign Team</label>
+                <select name="assign_team_id" class="cas-input w-full p-2">
+                    <option value="">-- Unassigned --</option>
+                    {% for team in teams %}
+                    <option value="{{ team.team_id }}">{{ team.team_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="md:col-span-2">
+                <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase text-xs tracking-widest font-bold">Add Officer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden">
     <table class="w-full text-left cas-table">
         <thead class="bg-[#111]">
@@ -65,7 +116,7 @@
             {% empty %}
             <tr>
                 <td colspan="4" class="p-8 text-center text-[#888] font-bold tracking-widest uppercase bg-[#111]">
-                    NO PERSONNEL FOUND MATCHING CRITERIA.
+                    NO OFFICERS FOUND MATCHING CRITERIA.
                 </td>
             </tr>
             {% endfor %}

@@ -10,6 +10,36 @@
     </div>
 </div>
 
+<div class="bg-[#1a1a1a] p-6 border border-[#2e2e2e] mb-8">
+    <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Warrant</h4>
+    <form method="post" action="{% url 'warrant_tracking' %}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        {% csrf_token %}
+        <div class="md:col-span-2">
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Criminal</label>
+            <select name="criminal_id" class="cas-input w-full p-2" required>
+                <option value="">-- Select Criminal --</option>
+                {% for criminal in criminal_choices %}
+                <option value="{{ criminal.criminal_id }}">{{ criminal.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Issue Date</label>
+            <input type="date" name="issue_date" class="cas-input w-full p-2" required>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Status</label>
+            <select name="status" class="cas-input w-full p-2">
+                <option value="Active">Active</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+        <div class="md:col-span-4">
+            <button type="submit" class="bg-[#c0392b] text-white p-2 px-6 uppercase text-xs font-bold tracking-widest">Add Warrant</button>
+        </div>
+    </form>
+</div>
+
 <!-- Feature 9: Warrant tracking filterable by Active or Cancelled -->
 <div class="bg-[#1a1a1a] p-6 border border-[#2e2e2e] mb-8">
     <form method="get" action="{% url 'warrant_tracking' %}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -35,7 +65,7 @@
             <tr>
                 <th class="p-4 tracking-widest">ID</th>
                 <th class="p-4 tracking-widest">Issued Date</th>
-                <th class="p-4 tracking-widest">Subject</th>
+                <th class="p-4 tracking-widest">Criminal</th>
                 <th class="p-4 tracking-widest">Status</th>
             </tr>
         </thead>
@@ -45,8 +75,8 @@
                 <td class="p-4 font-mono text-[#888]">#{{ warrant.warrant_id }}</td>
                 <td class="p-4 font-mono">{{ warrant.issue_date|date:"Y-m-d" }}</td>
                 <td class="p-4">
-                    <a href="{% url 'criminal_profile' warrant.criminal.criminal_id %}" class="text-[#e0e0e0] hover:text-[#c0392b] hover:underline uppercase font-bold tracking-wider">
-                        {{ warrant.criminal.name }}
+                    <a href="{% url 'criminal_profile' warrant.criminal_id %}" class="text-[#e0e0e0] hover:text-[#c0392b] hover:underline uppercase font-bold tracking-wider">
+                        {{ warrant.criminal_name }}
                     </a>
                 </td>
                 <td class="p-4 font-bold text-[10px] tracking-widest uppercase {% if warrant.status == 'Active' %}text-[#c0392b]{% else %}text-[#888]{% endif %}">

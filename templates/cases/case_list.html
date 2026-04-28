@@ -10,6 +10,36 @@
     </div>
 </div>
 
+<div class="bg-[#1a1a1a] p-6 border border-[#2e2e2e] mb-8">
+    <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Create Case Record</h4>
+    <form method="post" action="{% url 'case_status_list' %}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        {% csrf_token %}
+        <div class="md:col-span-2">
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Crime</label>
+            <select name="crime_id" class="cas-input w-full p-2" required>
+                <option value="">-- Select Crime --</option>
+                {% for crime in available_crimes %}
+                <option value="{{ crime.crime_id }}">Crime #{{ crime.crime_id }} | {{ crime.method_used }} | {{ crime.location }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Opened Date</label>
+            <input type="date" name="opened_date" class="cas-input w-full p-2">
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Status</label>
+            <select name="case_status" class="cas-input w-full p-2">
+                <option value="Open">Open</option>
+                <option value="Finished">Finished</option>
+            </select>
+        </div>
+        <div class="md:col-span-4">
+            <button type="submit" class="bg-[#c0392b] text-white p-2 px-6 uppercase text-xs font-bold tracking-widest">Create Case</button>
+        </div>
+    </form>
+</div>
+
 <!-- Feature 15: Cases filterable by status -->
 <div class="bg-[#1a1a1a] p-6 border border-[#2e2e2e] mb-8">
     <form method="get" action="{% url 'case_status_list' %}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -37,6 +67,7 @@
                 <th class="p-4 tracking-widest">Linked Incident</th>
                 <th class="p-4 tracking-widest">Location</th>
                 <th class="p-4 tracking-widest">Status</th>
+                <th class="p-4 tracking-widest">Verdict</th>
                 <th class="p-4 tracking-widest text-right">Actions</th>
             </tr>
         </thead>
@@ -45,16 +76,21 @@
             <tr class="hover:bg-[#1f1f1f] transition-colors">
                 <td class="p-4 font-mono font-bold text-[#e0e0e0]">#{{ case.case_id }}</td>
                 <td class="p-4 text-sm">
-                    <a href="{% url 'crime_detail' case.crime.crime_id %}" class="text-[#888] hover:text-[#c0392b] font-mono hover:underline uppercase tracking-wide">
-                        [CRIME #{{ case.crime.crime_id }}]
+                    <a href="{% url 'crime_detail' case.crime_id %}" class="text-[#888] hover:text-[#c0392b] font-mono hover:underline uppercase tracking-wide">
+                        [CRIME #{{ case.crime_id }}]
                     </a>
                 </td>
                 <td class="p-4 text-[#888] uppercase tracking-wide">
-                    {{ case.crime.location }}
+                    {{ case.location }}
                 </td>
                 <td class="p-4">
                     <span class="px-2 py-1 text-[10px] font-bold tracking-widest uppercase bg-{% if case.status == 'Open' %}#c0392b{% else %}#16a34a{% endif %} text-[#fff]">
                         {{ case.status }}
+                    </span>
+                </td>
+                <td class="p-4">
+                    <span class="px-2 py-1 text-[10px] font-bold tracking-widest uppercase border {% if case.verdict_label == 'IN JAIL' %}border-[#c0392b] text-[#c0392b] bg-[#c0392b] bg-opacity-10{% elif case.verdict_label == 'FINED' %}border-[#b45309] text-[#b45309] bg-[#b45309] bg-opacity-10{% elif case.verdict_label == 'PENDING' or not case.verdict_label %}border-[#4b5563] text-[#9ca3af] bg-[#111]{% else %}border-[#16a34a] text-[#16a34a] bg-[#16a34a] bg-opacity-10{% endif %}">
+                        {{ case.verdict_label|default:"PENDING" }}
                     </span>
                 </td>
                 <td class="p-4 text-right">
@@ -65,7 +101,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
+                <td colspan="6" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
                     NO CASES MATCHING CRITERIA FOUND.
                 </td>
             </tr>

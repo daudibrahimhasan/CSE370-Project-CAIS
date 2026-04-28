@@ -5,10 +5,50 @@
 {% block content %}
 <div class="mb-6">
     <h2 class="text-3xl font-black text-[#c0392b] tracking-wider uppercase">BOLO: BE ON THE LOOKOUT</h2>
-    <p class="text-[#888] text-xs mt-1 uppercase tracking-widest">Active warrants requiring immediate attention from all precincts.</p>
+    <p class="text-[#888] text-xs mt-1 uppercase tracking-widest">Top 10 most dangerous active criminals still at large across all sectors.</p>
 </div>
 
-<!-- Feature 11: BOLO list querying all active warrants -->
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6 mb-8">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-6">
+        <div>
+            <h3 class="text-[#c0392b] uppercase text-xs tracking-widest font-bold">BOLO Sector Graph</h3>
+            <p class="text-[#666] text-[11px] uppercase tracking-widest mt-2">Live distribution of top-priority active BOLO criminals across operational sectors.</p>
+        </div>
+        <div class="grid grid-cols-3 gap-3 text-center min-w-[280px]">
+            <div class="bg-[#111] border border-[#2e2e2e] px-4 py-3">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">Total</div>
+                <div class="font-heading text-3xl text-[#e0e0e0]">{{ total_bolos }}</div>
+            </div>
+            <div class="bg-[#111] border border-[#2e2e2e] px-4 py-3">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">Sectors</div>
+                <div class="font-heading text-3xl text-[#0f766e]">{{ sector_count }}</div>
+            </div>
+            <div class="bg-[#111] border border-[#2e2e2e] px-4 py-3">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">Top Sector</div>
+                <div class="font-heading text-lg text-[#c0392b]">{{ top_sector_name }}</div>
+                <div class="text-[10px] text-[#888] uppercase tracking-widest">{{ top_sector_total }} active</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-4">
+        {% for item in sector_graph %}
+        <div>
+            <div class="flex justify-between items-center mb-1 text-[11px] uppercase tracking-widest">
+                <span class="text-[#e0e0e0]">{{ item.label }}</span>
+                <span class="text-[#888]">{{ item.count }} criminal{{ item.count|pluralize }}</span>
+            </div>
+            <div class="h-4 bg-[#111] border border-[#2e2e2e] overflow-hidden">
+                <div class="h-full transition-all duration-500" style="width: {{ item.width_percent }}%; background-color: {{ item.color }};"></div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-[#888] text-xs uppercase tracking-widest">No active BOLO records available for graphing.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Feature 11: BOLO list querying only the top 10 most dangerous active warrants -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for bolo in bolos %}
     <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0 flex flex-col relative overflow-hidden group">
@@ -25,6 +65,7 @@
                 <h4 class="text-xl font-heading text-[#e0e0e0] tracking-wide uppercase">{{ bolo.name }}</h4>
                 <div class="text-[#c0392b] text-xs font-bold mt-1">ID: #{{ bolo.criminal_id }}</div>
                 <div class="text-[#666] text-[10px] mt-2 uppercase">AGE: {{ bolo.age }} | GENDER: <span class="text-[#e0e0e0]">{{ bolo.gender }}</span></div>
+                <div class="text-[#d4a24c] text-[10px] mt-2 uppercase tracking-widest">Bounty: <span class="text-[#f1d9a1] font-bold">B {{ bolo.bounty_amount }}</span></div>
             </div>
         </div>
         
@@ -32,15 +73,32 @@
             <div class="text-[#888] text-[10px] uppercase border-b border-[#333] pb-1 mb-1 tracking-widest">Physical Description</div>
             <div class="text-[#e0e0e0] text-sm">{{ bolo.physical_description|default:"None on file." }}</div>
         </div>
+
+        <div class="px-6 pb-2">
+            <div class="text-[#888] text-[10px] uppercase border-b border-[#333] pb-1 mb-1 tracking-widest">Sector</div>
+            <div class="text-[#e0e0e0] text-sm font-heading tracking-wide uppercase">{{ bolo.sector_name|default:"Unassigned" }}</div>
+        </div>
         
         <div class="px-6 pb-6 mt-auto">
             <div class="text-[#888] text-[10px] uppercase border-b border-[#333] pb-1 mb-1 tracking-widest">Warrant Status</div>
             <div class="text-[#16a34a] text-sm font-mono uppercase">ACTIVE / ISSUED: {{ bolo.issue_date|date:"Y-m-d" }}</div>
         </div>
+
+        <div class="px-6 pb-4">
+            <div class="text-[#888] text-[10px] uppercase border-b border-[#333] pb-1 mb-1 tracking-widest">Current Condition</div>
+            <div class="text-sm font-mono uppercase {% if bolo.current_status == 'IN_JAIL' %}text-[#c0392b]{% elif bolo.current_status == 'WANTED' %}text-[#b45309]{% elif bolo.current_status == 'RELEASED' %}text-[#16a34a]{% else %}text-[#888]{% endif %}">
+                {{ bolo.current_status|default:"UNKNOWN" }}
+            </div>
+            {% if bolo.jail_name %}
+            <div class="text-[#888] text-[10px] uppercase tracking-widest mt-2">
+                {{ bolo.jail_name }}{% if bolo.jail_number %} / {{ bolo.jail_number }}{% endif %}
+            </div>
+            {% endif %}
+        </div>
         
         <div class="mt-2 flex border-t border-[#2e2e2e]">
             <a href="{% url 'criminal_profile' bolo.criminal_id %}" class="flex-1 text-center py-2 text-[#888] hover:text-[#c0392b] hover:bg-[#222] text-xs uppercase tracking-widest transition-colors font-bold">
-                View Subject File &rarr;
+                View Criminal File &rarr;
             </a>
         </div>
     </div>

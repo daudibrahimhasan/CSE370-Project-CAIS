@@ -1,46 +1,280 @@
 {% extends 'base.html' %}
 
-{% block page_title %}PERSONNEL LOGS{% endblock %}
+{% block page_title %}OFFICER OPERATIONS{% endblock %}
 
 {% block content %}
 <div class="mb-6 border-b border-[#2e2e2e] pb-4">
-    <h3 class="text-[#e0e0e0] uppercase tracking-widest text-lg">System Shift Logs</h3>
-    <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Chronological record of all logged hours by active personnel.</p>
+    <h3 class="text-[#e0e0e0] uppercase tracking-widest text-lg">Duty Desk & Shift Logs</h3>
+        <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Track which officers are on duty today, where they are deployed, and what mission they are carrying.</p>
 </div>
 
-<!-- Feature 3: Officer shift tracking -->
-<div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0 overflow-hidden tracking-tight">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-5">
+        <div class="text-[#666] text-[10px] uppercase tracking-widest">On Duty Today</div>
+        <div class="font-heading text-4xl text-[#e0e0e0] mt-2">{{ on_duty_count }}</div>
+    </div>
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-5">
+        <div class="text-[#666] text-[10px] uppercase tracking-widest">With Active Assignment</div>
+        <div class="font-heading text-4xl text-[#c0392b] mt-2">{{ active_assignment_count }}</div>
+    </div>
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-5">
+        <div class="text-[#666] text-[10px] uppercase tracking-widest">Operational Sectors</div>
+        <div class="font-heading text-4xl text-[#0f766e] mt-2">{{ sectors|length }}</div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Manual Officer Assignment</h4>
+        <form method="post" action="{% url 'shift_tracking' %}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="assign_officer">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Officer</label>
+                <select name="officer_id" class="cas-input w-full p-2" required>
+                    <option value="">-- Select Officer --</option>
+                    {% for officer in officers %}
+                    <option value="{{ officer.officer_id }}">{{ officer.rank }} {{ officer.name }} [{{ officer.badge_number }}]</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Task Type</label>
+                <select name="task_type" class="cas-input w-full p-2" required>
+                    <option value="">-- Select Task --</option>
+                    <option value="INVESTIGATE_CRIME">Investigate Crime</option>
+                    <option value="SURVEILLANCE_CRIMINAL">Surveillance Criminal</option>
+                    <option value="ARREST">Arrest Target</option>
+                    <option value="COURT_APPEARANCE">Court Appearance</option>
+                    <option value="EVIDENCE_HANDLING">Evidence Handling</option>
+                    <option value="OTHER">Other Tasking</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Sector</label>
+                <select name="sector_name" class="cas-input w-full p-2">
+                    <option value="">-- Unassigned Sector --</option>
+                    {% for sector in sectors %}
+                    <option value="{{ sector }}">{{ sector }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Status</label>
+                <select name="assignment_status" class="cas-input w-full p-2">
+                    <option value="ASSIGNED">Assigned</option>
+                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Priority</label>
+                <select name="priority" class="cas-input w-full p-2">
+                    <option value="1">1 - Critical</option>
+                    <option value="2">2 - High</option>
+                    <option value="3" selected>3 - Standard</option>
+                    <option value="4">4 - Routine</option>
+                    <option value="5">5 - Low</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Due By</label>
+                <input type="datetime-local" name="due_at" class="cas-input w-full p-2">
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Linked Criminal</label>
+                <select name="criminal_id" class="cas-input w-full p-2">
+                    <option value="">-- Optional Criminal --</option>
+                    {% for criminal in criminals %}
+                    <option value="{{ criminal.criminal_id }}">{{ criminal.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Linked Case</label>
+                <select name="case_id" class="cas-input w-full p-2">
+                    <option value="">-- Optional Case --</option>
+                    {% for case in cases %}
+                    <option value="{{ case.case_id }}">Case #{{ case.case_id }} | {{ case.status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Notes</label>
+                <textarea name="notes" class="cas-input w-full p-2 min-h-24" placeholder="Mission brief, area watch, arrest conditions, chain-of-command notes..."></textarea>
+            </div>
+            <div class="md:col-span-2">
+                <button type="submit" class="bg-[#c0392b] text-white p-2 px-6 uppercase text-xs tracking-widest font-bold">Assign Officer</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Shift Record</h4>
+        <form method="post" action="{% url 'shift_tracking' %}" class="grid grid-cols-1 gap-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="add_shift">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Officer</label>
+                <select name="officer_id" class="cas-input w-full p-2" required>
+                    <option value="">-- Select Officer --</option>
+                    {% for officer in officers %}
+                    <option value="{{ officer.officer_id }}">{{ officer.rank }} {{ officer.name }} [{{ officer.badge_number }}]</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Shift Date</label>
+                <input type="date" name="shift_date" class="cas-input w-full p-2" required>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Hours Worked</label>
+                <input type="number" step="0.25" min="1" name="hours_worked" class="cas-input w-full p-2" required>
+            </div>
+            <div>
+                <button type="submit" class="w-full bg-[#111] border border-[#16a34a] text-[#16a34a] p-2 uppercase text-xs tracking-widest font-bold hover:bg-[#16a34a] hover:text-[#111] transition-colors">Log Shift</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden mb-8">
+    <div class="px-6 py-4 bg-[#111] border-b border-[#2e2e2e]">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm">Currently On Duty</h4>
+        <p class="text-[#666] text-[10px] mt-1 uppercase tracking-widest">Officers with a shift logged for today, paired with their latest active deployment.</p>
+    </div>
     <table class="w-full text-left cas-table">
         <thead class="bg-[#111]">
             <tr>
-                <th class="p-4 tracking-widest">Shift Date</th>
-                <th class="p-4 tracking-widest">Officer Name</th>
-                <th class="p-4 tracking-widest">Rank & Badge</th>
-                <th class="p-4 tracking-widest">Hours Logged</th>
+                <th class="p-4 tracking-widest">Officer</th>
+                <th class="p-4 tracking-widest">Hours Today</th>
+                <th class="p-4 tracking-widest">Assigned Sector</th>
+                <th class="p-4 tracking-widest">Current Task</th>
+                <th class="p-4 tracking-widest">Assignment Status</th>
             </tr>
         </thead>
-        <tbody class="text-xs border-[#2e2e2e]">
-            {% for shift in shifts %}
-            <tr class="hover:bg-[#1f1f1f] transition-colors border-b border-[#2e2e2e]">
-                <td class="p-4 font-mono text-[#e0e0e0]">{{ shift.date|date:"Y-m-d" }}</td>
-                <td class="p-4 font-heading text-[#e0e0e0] tracking-wider text-sm">{{ shift.officer.name }}</td>
-                <td class="p-4 text-[#888] uppercase font-bold tracking-widest text-[10px]">
-                    {{ shift.officer.rank }} [<span class="text-[#c0392b]">{{ shift.officer.badge_number }}</span>]
+        <tbody class="text-xs">
+            {% for officer in on_duty_officers %}
+            <tr class="hover:bg-[#1f1f1f] transition-colors">
+                <td class="p-4">
+                    <div class="text-[#e0e0e0] font-heading text-sm tracking-wider">{{ officer.officer_name }}</div>
+                    <div class="text-[#888] uppercase tracking-widest text-[10px]">{{ officer.rank }} [{{ officer.badge_number }}]</div>
                 </td>
                 <td class="p-4">
                     <span class="px-2 py-0.5 border border-[#16a34a] text-[#16a34a] bg-[#16a34a] bg-opacity-10 uppercase tracking-widest text-[10px] font-bold">
-                        {{ shift.hours_worked }} HRS
+                        {{ officer.hours_logged }} HRS
                     </span>
+                </td>
+                <td class="p-4 text-[#e0e0e0] uppercase tracking-widest">
+                    {{ officer.sector_name|default:"UNASSIGNED" }}
+                </td>
+                <td class="p-4">
+                    {% if officer.task_type %}
+                    <div class="text-[#c0392b] uppercase tracking-widest text-[10px] font-bold">{{ officer.task_type|cut:"_" }}</div>
+                    <div class="text-[#888] uppercase tracking-widest text-[10px] mt-1">{{ officer.target_label }}</div>
+                    {% else %}
+                    <span class="text-[#666] uppercase tracking-widest text-[10px]">No active assignment</span>
+                    {% endif %}
+                </td>
+                <td class="p-4">
+                    {% if officer.assignment_status %}
+                    <span class="px-2 py-0.5 border {% if officer.assignment_status == 'IN_PROGRESS' %}border-[#c0392b] text-[#c0392b]{% else %}border-[#16a34a] text-[#16a34a]{% endif %} uppercase tracking-widest text-[10px] font-bold">
+                        {{ officer.assignment_status|cut:"_" }}
+                    </span>
+                    {% else %}
+                    <span class="text-[#666] uppercase tracking-widest text-[10px]">Off Rotation</span>
+                    {% endif %}
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
-                    NO SHIFT RECORDS FOUND.
+                <td colspan="5" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
+                    No officers are logged on duty today.
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0 overflow-hidden tracking-tight">
+        <div class="px-6 py-4 bg-[#111] border-b border-[#2e2e2e]">
+            <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm">Recent Assignments</h4>
+        </div>
+        <table class="w-full text-left cas-table">
+            <thead class="bg-[#111]">
+                <tr>
+                    <th class="p-4 tracking-widest">Officer</th>
+                    <th class="p-4 tracking-widest">Task</th>
+                    <th class="p-4 tracking-widest">Sector</th>
+                    <th class="p-4 tracking-widest">Status</th>
+                </tr>
+            </thead>
+            <tbody class="text-xs">
+                {% for assignment in recent_assignments %}
+                <tr class="hover:bg-[#1f1f1f] transition-colors">
+                    <td class="p-4">
+                        <div class="text-[#e0e0e0]">{{ assignment.officer_name }}</div>
+                        <div class="text-[#666] text-[10px] uppercase tracking-widest">{{ assignment.badge_number }}</div>
+                    </td>
+                    <td class="p-4">
+                        <div class="text-[#c0392b] uppercase tracking-widest text-[10px] font-bold">{{ assignment.task_type|cut:"_" }}</div>
+                        <div class="text-[#888] uppercase tracking-widest text-[10px] mt-1">{{ assignment.target_label }}</div>
+                    </td>
+                    <td class="p-4 text-[#e0e0e0] uppercase tracking-widest text-[10px]">{{ assignment.sector_name|default:"UNASSIGNED" }}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-0.5 border border-[#333] text-[#e0e0e0] uppercase tracking-widest text-[10px] font-bold">{{ assignment.status|cut:"_" }}</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
+                        No assignments found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-0 overflow-hidden tracking-tight">
+        <div class="px-6 py-4 bg-[#111] border-b border-[#2e2e2e]">
+            <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm">Shift Log Archive</h4>
+        </div>
+        <table class="w-full text-left cas-table">
+            <thead class="bg-[#111]">
+                <tr>
+                    <th class="p-4 tracking-widest">Shift Date</th>
+                    <th class="p-4 tracking-widest">Officer Name</th>
+                    <th class="p-4 tracking-widest">Rank & Badge</th>
+                    <th class="p-4 tracking-widest">Hours Logged</th>
+                </tr>
+            </thead>
+            <tbody class="text-xs border-[#2e2e2e]">
+                {% for shift in shifts %}
+                <tr class="hover:bg-[#1f1f1f] transition-colors border-b border-[#2e2e2e]">
+                    <td class="p-4 font-mono text-[#e0e0e0]">{{ shift.date|date:"Y-m-d" }}</td>
+                    <td class="p-4 font-heading text-[#e0e0e0] tracking-wider text-sm">{{ shift.officer_name }}</td>
+                    <td class="p-4 text-[#888] uppercase font-bold tracking-widest text-[10px]">
+                        {{ shift.rank }} [<span class="text-[#c0392b]">{{ shift.badge_number }}</span>]
+                    </td>
+                    <td class="p-4">
+                        <span class="px-2 py-0.5 border border-[#16a34a] text-[#16a34a] bg-[#16a34a] bg-opacity-10 uppercase tracking-widest text-[10px] font-bold">
+                            {{ shift.hours_worked }} HRS
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
+                        No shift records found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

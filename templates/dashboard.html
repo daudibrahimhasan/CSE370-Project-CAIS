@@ -77,6 +77,64 @@
             </div>
         </div>
     </div>
+
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <div class="flex items-center justify-between gap-4 flex-wrap mb-6">
+            <div>
+                <h3 class="text-[#c0392b] uppercase text-xs tracking-widest font-bold">Frontend Feature Pages</h3>
+                <p class="text-[#666] text-[11px] uppercase tracking-widest mt-2">Open any module below and show the matching raw SQL page during viva.</p>
+            </div>
+            <a href="{% url 'features' %}" class="border border-[#c0392b] text-[#c0392b] hover:bg-[#c0392b] hover:text-white px-4 py-2 uppercase tracking-widest text-xs transition-colors">
+                Open Features.py Map
+            </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <a href="{% url 'officer_search' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">OfficerSearch.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Officer Search</div>
+            </a>
+            <a href="{% url 'shift_tracking' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">ShiftTracking.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Shift Tracking</div>
+            </a>
+            <a href="{% url 'criminal_list' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">CriminalList.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Criminal List</div>
+            </a>
+            <a href="{% url 'criminal_registry' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">CriminalRegistry.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Registry</div>
+            </a>
+            <a href="{% url 'repeat_offenders' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">RepeatOffenders.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Repeat Alert</div>
+            </a>
+            <a href="{% url 'crime_list' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">CrimeList.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Crime Records</div>
+            </a>
+            <a href="{% url 'pattern_finder' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">CrimePatternFinder.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Pattern Finder</div>
+            </a>
+            <a href="{% url 'warrant_tracking' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">WarrantTracking.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Warrants</div>
+            </a>
+            <a href="{% url 'bolo_list' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">BOLOList.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">BOLO List</div>
+            </a>
+            <a href="{% url 'case_status_list' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">CaseRecords.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Case Records</div>
+            </a>
+            <a href="{% url 'court_list' %}" class="border border-[#2e2e2e] bg-[#111] p-4 hover:border-[#c0392b] hover:text-white transition-colors">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest">CourtCalendar.py</div>
+                <div class="font-heading text-2xl text-[#e0e0e0] mt-2">Court Calendar</div>
+            </a>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -87,7 +145,7 @@
             "System initialized...",
             "Connecting to secure server [BG-BD-MAIN]...",
             "Connection established. Latency: 12ms",
-            "User {{ request.user.username }} authenticated.",
+            "User {{ session_username|default:'Operator' }} authenticated.",
             "Loading case files...",
             "Warning: Database latency high on sector 7.",
             "New BOLO issued: ID W-1023",

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block page_title %}COURT SESSION #{{ court_session.court_id }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div>
+        <a href="{% url 'court_list' %}" class="text-[#c0392b] hover:text-white text-xs uppercase tracking-widest hover:underline">&larr; Return to Court Calendar</a>
+    </div>
+
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden">
+        <div class="bg-[#111] border-b border-[#2e2e2e] p-6">
+            <h2 class="text-3xl font-heading text-[#e0e0e0] tracking-wider uppercase">Court Session #{{ court_session.court_id }}</h2>
+            <p class="text-[#888] text-xs mt-2 uppercase tracking-widest">Scheduled for {{ court_session.court_date|date:"Y-m-d" }}</p>
+        </div>
+
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+            <div class="bg-[#111] border border-[#222] p-4">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest mb-2">Presiding Judge</div>
+                <div class="text-xl font-heading text-[#c0392b] tracking-wide uppercase">{{ court_session.judge_name }}</div>
+            </div>
+            <div class="bg-[#111] border border-[#222] p-4">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest mb-2">Linked Case</div>
+                <a href="{% url 'case_detail' court_session.case_id %}" class="text-xl font-heading text-[#e0e0e0] hover:text-[#c0392b] tracking-wide uppercase">
+                    Case #{{ court_session.case_id }}
+                </a>
+                <div class="text-[10px] text-[#666] uppercase mt-2">Status: {{ court_session.case_status }}</div>
+            </div>
+            <div class="bg-[#111] border border-[#222] p-4 md:col-span-2">
+                <div class="text-[10px] text-[#666] uppercase tracking-widest mb-2">Related Crime</div>
+                <a href="{% url 'crime_detail' court_session.crime_id %}" class="text-[#c0392b] hover:text-white uppercase tracking-widest font-bold">
+                    Crime #{{ court_session.crime_id }}
+                </a>
+                <p class="text-[#888] mt-3 leading-relaxed">{{ court_session.description }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

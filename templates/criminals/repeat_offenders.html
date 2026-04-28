@@ -11,7 +11,7 @@
             </svg>
             Priority Targets Alert
         </h2>
-        <p class="text-[#888] text-xs mt-1 uppercase tracking-widest">Subjects involved in multiple crimes (2 or more offences). Automatically flagged.</p>
+        <p class="text-[#888] text-xs mt-1 uppercase tracking-widest">Criminals involved in multiple crimes (2 or more offences). Automatically flagged.</p>
     </div>
     <div class="text-[#c0392b] text-xs border border-[#c0392b] px-3 py-1 bg-[#c0392b] bg-opacity-10 tracking-widest font-bold">
         THRESHOLD: &ge;2 INCIDENTS
@@ -22,8 +22,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="repeat-list">
     {% for offender in offenders %}
     
-    <!-- Pulse effect if count is particularly high -->
-    <div class="bg-[#1a1a1a] p-0 flex flex-col border border-[#2e2e2e] {% if offender.crime_count >= 5 %}border-l-4 border-[#c0392b] animate-pulse{% else %}border-l-2 border-[#555]{% endif %}">
+    <div class="bg-[#1a1a1a] p-0 flex flex-col border border-[#2e2e2e] {% if offender.crime_count >= 5 %}border-l-4 border-[#c0392b]{% else %}border-l-2 border-[#555]{% endif %}">
         <div class="p-6 flex-grow flex justify-between items-center">
             <div>
                 <div class="flex items-center gap-3">
@@ -43,7 +42,7 @@
         
         <div class="bg-[#111] px-6 py-3 border-t border-[#2e2e2e] flex justify-center">
             <a href="{% url 'criminal_profile' offender.criminal_id %}" class="text-[#888] hover:text-[#fff] hover:font-bold tracking-widest text-[10px] uppercase transition-all">
-                Access Subject File &rarr;
+                Access Criminal File &rarr;
             </a>
         </div>
     </div>

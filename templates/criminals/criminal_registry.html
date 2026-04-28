@@ -6,7 +6,7 @@
 <div class="mb-6 flex justify-between items-end border-b border-[#2e2e2e] pb-4">
     <div>
         <h3 class="text-[#e0e0e0] text-lg uppercase tracking-widest">Master Criminal Index</h3>
-        <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">A comprehensive registry linking subjects to their recorded criminal offences.</p>
+        <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">A comprehensive registry linking criminals to their recorded criminal offences.</p>
     </div>
 </div>
 
@@ -14,7 +14,7 @@
     <table class="w-full text-left cas-table">
         <thead class="bg-[#111]">
             <tr>
-                <th class="p-4 tracking-widest">Subject Name</th>
+                <th class="p-4 tracking-widest">Criminal Name</th>
                 <th class="p-4 tracking-widest">Age/Gender</th>
                 <th class="p-4 tracking-widest">Associated Offences</th>
                 <th class="p-4 tracking-widest">Profile Status</th>
@@ -32,11 +32,11 @@
                     {{ criminal.age }}Y / {{ criminal.gender|upper }}
                 </td>
                 <td class="p-4 text-[#aaa] font-mono italic">
-                    {% for crime in criminal.crimes_involved.all %}
-                        {{ crime.description }}{% if not forloop.last %}, {% endif %}
-                    {% empty %}
+                    {% if criminal.offences %}
+                        {{ criminal.offences }}
+                    {% else %}
                         <span class="text-[#444]">NO RECORDS FOUND</span>
-                    {% endfor %}
+                    {% endif %}
                 </td>
                 <td class="p-4 border-l border-[#2e2e2e]">
                     {% if criminal.is_repeat_offender %}
@@ -51,7 +51,7 @@
             {% empty %}
             <tr>
                 <td colspan="4" class="p-8 text-center text-[#888] tracking-widest uppercase">
-                    The database is currently clear of recorded criminal subjects.
+                    The database is currently clear of recorded criminals.
                 </td>
             </tr>
             {% endfor %}

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
-{% block page_title %}SUBJECT PROFILE #{{ criminal.criminal_id }}{% endblock %}
+{% block page_title %}CRIMINAL PROFILE #{{ criminal.criminal_id }}{% endblock %}
 
 {% block content %}
 <div class="mb-4">
-    <a href="{% url 'criminal_list' %}" class="text-[#c0392b] hover:text-[#fff] text-xs uppercase tracking-widest hover:underline">&larr; Return to Subjects Database</a>
+    <a href="{% url 'criminal_list' %}" class="text-[#c0392b] hover:text-[#fff] text-xs uppercase tracking-widest hover:underline">&larr; Return to Criminals Database</a>
 </div>
 
 <!-- Feature 6: Full Profile Page -->
@@ -24,15 +24,20 @@
             </div>
         </div>
         
-        <!-- Danger / Risk Assessment placeholder for visuals -->
-        <div class="text-right">
-            <div class="text-[#c0392b] text-xs font-bold tracking-widest uppercase mb-1">Risk Assessment</div>
-            <div class="flex gap-1">
-                <div class="w-4 h-6 bg-[#c0392b]"></div>
-                <div class="w-4 h-6 bg-[#c0392b]"></div>
-                <div class="w-4 h-6 bg-[#c0392b]"></div>
-                <div class="w-4 h-6 bg-[#333]"></div>
-                <div class="w-4 h-6 bg-[#333]"></div>
+        <div class="min-w-[260px] bg-gradient-to-br from-[#24170d] via-[#111] to-[#1d1209] border border-[#7a5220] px-5 py-4 shadow-[0_0_18px_rgba(212,162,76,0.08)]">
+            <div class="text-[#d4a24c] text-[10px] font-bold tracking-[0.35em] uppercase mb-2">Wanted Poster</div>
+            <div class="text-[#f1d9a1] font-heading text-4xl tracking-wider leading-none">B {{ criminal.bounty_amount }}</div>
+            <div class="mt-3 text-[10px] text-[#9f8b6a] uppercase tracking-widest">
+                Sector: <span class="text-[#e0e0e0]">{{ criminal.sector_name|default:"Unknown Waters" }}</span>
+            </div>
+            <div class="mt-2 text-[10px] text-[#9f8b6a] uppercase tracking-widest">
+                Status:
+                <span class="text-[#e0e0e0]">
+                    {{ criminal.current_status|default:"UNKNOWN" }}
+                    {% if criminal.jail_name %}
+                        / {{ criminal.jail_name }}{% if criminal.jail_number %} / {{ criminal.jail_number }}{% endif %}
+                    {% endif %}
+                </span>
             </div>
         </div>
     </div>
@@ -110,7 +115,7 @@
             <div class="p-4 border-b border-[#2e2e2e] bg-[#111] last:border-0 hover:bg-[#1f1f1f] transition-colors">
                 <div class="flex justify-between items-center border-b border-[#222] pb-1 mb-2">
                     <span class="text-[10px] text-[#16a34a] font-mono">{{ session.date|date:"Y-m-d H:i" }}</span>
-                    <span class="text-[10px] text-[#888] uppercase tracking-widest">OFFICER: {{ session.officer.name }}</span>
+                    <span class="text-[10px] text-[#888] uppercase tracking-widest">OFFICER: {{ session.officer_name|default:"Unknown Officer" }}</span>
                 </div>
                 <p class="text-[#e0e0e0] font-mono text-xs whitespace-pre-line leading-relaxed">{{ session.notes }}</p>
             </div>
@@ -118,6 +123,46 @@
             <div class="p-6 text-center text-[#666] italic text-xs uppercase tracking-widest">No interrogations logged.</div>
             {% endfor %}
         </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Nickname</h4>
+        <form method="post" action="{% url 'criminal_profile' criminal.criminal_id %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="add_nickname">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Alias</label>
+                <input type="text" name="alias" class="cas-input w-full p-2" required>
+            </div>
+            <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Add Nickname</button>
+        </form>
+    </div>
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Interrogation Log</h4>
+        <form method="post" action="{% url 'criminal_profile' criminal.criminal_id %}" class="grid grid-cols-1 gap-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="add_interrogation">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Officer</label>
+                <select name="officer_id" class="cas-input w-full p-2">
+                    <option value="">-- Unknown Officer --</option>
+                    {% for officer in officers %}
+                    <option value="{{ officer.officer_id }}">{{ officer.name }} [{{ officer.badge_number }}]</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Date And Time</label>
+                <input type="datetime-local" name="interrogation_date" class="cas-input w-full p-2" required>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Notes</label>
+                <textarea name="notes" class="cas-input w-full p-2 min-h-24" required></textarea>
+            </div>
+            <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Add Interrogation</button>
+        </form>
     </div>
 </div>
 {% endblock %}

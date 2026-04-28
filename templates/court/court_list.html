@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block page_title %}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+            <h2 class="text-3xl font-heading text-[#c0392b] tracking-wider uppercase">Court Calendar</h2>
+            <p class="text-[#888] text-xs mt-1 uppercase tracking-widest">Scheduled hearings linked to active and archived case files.</p>
+        </div>
+        <form method="get" action="{% url 'court_list' %}" class="flex gap-3 items-end">
+            <div>
+                <label for="judge" class="block text-[10px] text-[#666] uppercase tracking-widest mb-2">Judge Search</label>
+                <input id="judge" name="judge" type="text" value="{{ selected_judge }}" placeholder="Marshall" class="cas-input px-3 py-2 text-xs w-56">
+            </div>
+            <button type="submit" class="px-4 py-2 border border-[#c0392b] text-[#c0392b] hover:bg-[#c0392b] hover:text-white uppercase tracking-widest text-xs font-bold transition-colors">
+                Filter
+            </button>
+        </form>
+    </div>
+
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Court Session</h4>
+        <form method="post" action="{% url 'court_list' %}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            {% csrf_token %}
+            <div class="md:col-span-2">
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Case Record</label>
+                <select name="case_id" class="cas-input w-full p-2" required>
+                    <option value="">-- Select Case --</option>
+                    {% for case in case_choices %}
+                    <option value="{{ case.case_id }}">Case #{{ case.case_id }} | {{ case.status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Court Date</label>
+                <input type="date" name="court_date" class="cas-input w-full p-2" required>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Judge Name</label>
+                <select name="judge_name" class="cas-input w-full p-2" required>
+                    <option value="">-- Select Judge --</option>
+                    {% for judge in existing_judges %}
+                    <option value="{{ judge }}">{{ judge }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="md:col-span-4">
+                <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Add Court Session</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden">
+        <div class="grid grid-cols-6 gap-4 px-6 py-4 bg-[#111] border-b border-[#2e2e2e] text-[10px] uppercase tracking-widest text-[#666] font-bold">
+            <div>Hearing Date</div>
+            <div>Case</div>
+            <div>Crime</div>
+            <div>Judge</div>
+            <div>Verdict</div>
+            <div class="text-right">Record</div>
+        </div>
+
+        {% for session in court_sessions %}
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 px-6 py-4 border-b border-[#2e2e2e] text-sm text-[#e0e0e0] hover:bg-[#111] transition-colors">
+            <div>{{ session.court_date|date:"Y-m-d" }}</div>
+            <div>
+                <a href="{% url 'case_detail' session.case_id %}" class="text-[#c0392b] hover:text-white font-bold uppercase tracking-widest">
+                    Case #{{ session.case_id }}
+                </a>
+                <div class="text-[10px] text-[#666] uppercase mt-1">Status: {{ session.case_status }}</div>
+            </div>
+            <div class="text-[#888]">{{ session.method_used }}</div>
+            <div>{{ session.judge_name }}</div>
+            <div>
+                <span class="inline-flex items-center px-3 py-1 text-[10px] font-bold tracking-widest uppercase border {% if session.verdict_label == 'IN JAIL' %}border-[#c0392b] text-[#c0392b] bg-[#c0392b] bg-opacity-10{% elif session.verdict_label == 'FINED' %}border-[#b45309] text-[#b45309] bg-[#b45309] bg-opacity-10{% elif session.verdict_label == 'PENDING' %}border-[#4b5563] text-[#9ca3af] bg-[#111]{% else %}border-[#16a34a] text-[#16a34a] bg-[#16a34a] bg-opacity-10{% endif %}">
+                    {{ session.verdict_label }}
+                </span>
+            </div>
+            <div class="text-right">
+                <a href="{% url 'court_detail' session.court_id %}" class="text-[#888] hover:text-[#c0392b] uppercase tracking-widest text-[10px] border border-[#333] px-3 py-1 hover:border-[#c0392b] transition-all">
+                    Open
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="px-6 py-10 text-center text-[#666] uppercase tracking-widest text-xs">
+            No court sessions matched this search.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -8,6 +8,44 @@
     <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Global view of all registered criminal activity.</p>
 </div>
 
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6 mb-8">
+    <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Crime Record</h4>
+    <form method="post" action="{% url 'crime_list' %}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% csrf_token %}
+        <div class="md:col-span-2">
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Description</label>
+            <textarea name="description" class="cas-input w-full p-2 min-h-24" required></textarea>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Method Used</label>
+            <input type="text" name="method_used" class="cas-input w-full p-2" required>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Location</label>
+            <input type="text" name="location" class="cas-input w-full p-2" required>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">City</label>
+            <input type="text" name="city" class="cas-input w-full p-2">
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Date & Time</label>
+            <input type="datetime-local" name="occurred_at" class="cas-input w-full p-2" required>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Status</label>
+            <select name="status" class="cas-input w-full p-2">
+                <option value="Open">Open</option>
+                <option value="Closed">Closed</option>
+                <option value="Cold">Cold</option>
+            </select>
+        </div>
+        <div class="md:col-span-2">
+            <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Add Crime</button>
+        </div>
+    </form>
+</div>
+
 <div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden">
     <table class="w-full text-left cas-table">
         <thead class="bg-[#111]">

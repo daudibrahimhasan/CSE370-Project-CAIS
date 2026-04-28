@@ -13,7 +13,7 @@
         <div>
             <h2 class="text-3xl font-heading text-[#e0e0e0] tracking-wider uppercase">Case File #{{ case.case_id }}</h2>
             <p class="text-[#888] font-mono text-[10px] uppercase mt-1 tracking-widest">
-                Linked Intelligence: <a href="{% url 'crime_detail' case.crime.crime_id %}" class="text-[#c0392b] hover:underline hover:text-white font-bold">[CRIME #{{ case.crime.crime_id }}]</a>
+                Linked Intelligence: <a href="{% url 'crime_detail' case.crime_id %}" class="text-[#c0392b] hover:underline hover:text-white font-bold">[CRIME #{{ case.crime_id }}]</a>
             </p>
         </div>
         <span class="px-4 py-2 border border-{% if case.status == 'Open' %}#c0392b{% else %}#16a34a{% endif %} bg-{% if case.status == 'Open' %}#c0392b{% else %}#16a34a{% endif %} bg-opacity-20 text-{% if case.status == 'Open' %}#c0392b{% else %}#16a34a{% endif %} font-bold tracking-widest uppercase text-xs">
@@ -23,8 +23,8 @@
     <div class="p-6">
         <h3 class="text-[#666] text-[10px] uppercase mb-2 tracking-widest border-b border-[#2e2e2e] pb-1">Incident Summary</h3>
         <p class="text-[#e0e0e0] bg-[#111] border border-[#222] p-4 text-sm leading-relaxed font-mono">
-            <strong>M.O. CATEGORY:</strong> <span class="text-[#c0392b]">{{ case.crime.method_used|upper }}</span><br><br>
-            {{ case.crime.description }}
+            <strong>M.O. CATEGORY:</strong> <span class="text-[#c0392b]">{{ case.method_used|upper }}</span><br><br>
+            {{ case.description }}
         </p>
     </div>
 </div>
@@ -57,5 +57,26 @@
         </div>
         {% endfor %}
     </div>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6 mt-6">
+    <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Update Case Status</h4>
+    <form method="post" action="{% url 'case_detail' case.case_id %}" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        {% csrf_token %}
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Case Status</label>
+            <select name="case_status" class="cas-input w-full p-2">
+                <option value="Open" {% if case.status == 'Open' %}selected{% endif %}>Open</option>
+                <option value="Finished" {% if case.status == 'Finished' %}selected{% endif %}>Finished</option>
+            </select>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Opened Date</label>
+            <input type="date" name="opened_date" value="{{ case.opened_date|date:'Y-m-d' }}" class="cas-input w-full p-2">
+        </div>
+        <div>
+            <button type="submit" class="w-full bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Update Case</button>
+        </div>
+    </form>
 </div>
 {% endblock %}

@@ -1,60 +1,63 @@
-# Criminal Analysis & Investigation System (CAIS)
+# CAIS
 
-Course Code: CSE370
+Criminal Analysis & Investigation System (CAIS) is a Python + Django + MySQL database course project rebuilt in a flat, page-oriented style similar to the reference PHP project.
 
-A robust, law-enforcement web application built to track criminal profiles, manage investigations, log evidence, and identify crime patterns using advanced data relationships.
+## Project Structure
 
-## ✨ Overview
+Major pages now exist as top-level `.py` files, similar to the reference project's `.php` pages:
 
-CAIS helps police departments and administrators organize officer squads, track repeat offenders, match crime patterns (M.O.), and maintain secure chains of evidence—ensuring public safety and more efficient investigations.
+- `index.py`
+- `features.py`
+- `login.py`
+- `dashboard.py`
+- `OfficerSearch.py`
+- `ShiftTracking.py`
+- `CriminalList.py`
+- `CriminalProfile.py`
+- `CriminalRegistry.py`
+- `RepeatOffenders.py`
+- `CrimeList.py`
+- `CrimeDetail.py`
+- `CrimePatternFinder.py`
+- `WarrantTracking.py`
+- `BOLOList.py`
+- `CaseRecords.py`
+- `CaseDetail.py`
+- `CourtCalendar.py`
+- `CourtDetail.py`
+- `connect.py`
 
-- 🗺️ **Crime Pattern Finder** (links crimes with the same method/trick)
+## Database Folder
 
-- 📚 **Repeat Offender Alerts** (automatically flags high-frequency criminals)
-- 📝 **Warrants & BOLO** (Be On the Lookout) tracking for public safety
-- 👥 **Officer & Team** tracking (manage shifts, divisions, and ranks)
-- 🛠️ **Master Criminal Index** & interrogation logs
-- 🏛️ **Case and Court Date** management
+- `Database/project_database.sql`
+  - reference-style SQL dump with CAIS schema and CAIS dummy data
+- `Database/README.md`
+  - reference-style numbered query explanation
+- `Database/runtime_mysql_schema.sql`
+  - Django runtime table mapping
+- `Database/VIVA_PAGE_QUERY_MAP.md`
+  - page-to-query guide for viva
 
-## 📦 Tech Stack
+## Feature Map
 
-- **Frontend:** HTML, CSS (Tailwind), Vanilla JavaScript
-- **Backend:** Python (Django Framework)
-- **Database:** MySQL / SQLite
+- `FEATURE_RUN_MAP.md`
+  - tells you which feature is running from which `.py` file, route, and template
 
-## 🧩 Feature Matrix
+## Core Stack
 
-| Sl  | Feature Name                | Type                 | Notes                                                             |
-| --- | --------------------------- | -------------------- | ----------------------------------------------------------------- |
-| 1   | **Admin Authentication**    | —                    | Secure session-based login for authorized personnel only.         |
-| 2   | **Officer Directory**       | Create, Read, Update | Manage officer names, ranks, and badge numbers.                   |
-| 3   | **Team Management**         | Create, Read, Update | Assign officers to specific squads (e.g., Homicide, Narcotics).   |
-| 4   | **Criminal Registry**       | Create, Read, Update | Store physical traits, age, gender, and profile status.           |
-| 5   | **Alias/Nickname Tracking** | Create, Read, Delete | Record and manage multiple street names per subject.              |
-| 6   | **Warrant Tracking**        | Create, Read, Update | Track "Active" or "Cancelled" bench warrants.                     |
-| 7   | **BOLO List**               | Read                 | Specialized view filtering only 'Active' warrants.                |
-| 8   | **Crime Records**           | Create, Read, Update | Log locations, dates, and methods of operation (M.O.).            |
-| 9   | **Crime Pattern Finder**    | Read                 | Identify linked crimes sharing the same operational tactics.      |
-| 10  | **Evidence Vault**          | Create, Read, Delete | Attach weapons, devices, and physical items to specific cases.    |
-| 11  | **Victim Roster**           | Create, Read, Update | Store affected individuals' names and secure contact numbers.     |
-| 12  | **Case Lifecycle**          | Create, Read, Update | Manage case status (e.g., "Open" or "Finished").                  |
-| 13  | **Legal Calendar**          | Create, Read, Update | Track court appearance dates and presiding judges.                |
-| 14  | **Repeat Offender Alert**   | Read                 | Aggregates crime counts to automatically flag habitual offenders. |
-| 15  | **Interrogation Logs**      | Create, Read, Update | Store private interview notes between officers and suspects.      |
+- Frontend: HTML, CSS, JavaScript, Tailwind CDN
+- Backend: Python, Django
+- Database: MySQL
+- Query Style: Raw SQL in feature page files
 
-## 👥 Team
+## Running Idea
 
-- **Daud Ibrahim Hassan**
-- **Abir Enam**
-- **Ocean Biswas**
+The repository is intentionally structured so each major page has its own Python file, just like the reference project had one PHP file per feature.
 
-### 📸 Project Preview
+Django is still used for:
 
-![Login System](public/1.png)
-![System Dashboard](public/2.png)
-![Active BOLOs](public/3.png)
-![Case Management](public/4.png)
-![Criminal Registry](public/5.png)
-![Crime Patterns](public/6.png)
-![System Personnel](public/7.png)
-![Warrant Tracking](public/8.png)
+- routing
+- template rendering
+- session handling
+
+But the project is presented in a flat, feature-file style for easier demo and viva explanation.

@@ -70,7 +70,7 @@
                     <p class="text-[#e0e0e0] font-heading text-lg tracking-wider uppercase">{{ victim.name }}</p>
                     <div class="mt-2 text-[#888] text-[10px] uppercase tracking-widest">Contact Information:</div>
                     <div class="mt-1 flex flex-wrap gap-2">
-                        {% for phone in victim.phones.all %}
+                        {% for phone in victim.phones %}
                         <span class="font-mono text-[#16a34a] bg-[#16a34a] bg-opacity-10 border border-[#16a34a] px-2 py-0.5">{{ phone.phone_number }}</span>
                         {% empty %}
                         <span class="text-[#666] italic text-xs">Unknown / Unreachable</span>
@@ -101,6 +101,79 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Evidence</h4>
+        <form method="post" action="{% url 'crime_detail' crime.crime_id %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="add_evidence">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Evidence Type</label>
+                <input type="text" name="evidence_type" class="cas-input w-full p-2" required>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Description</label>
+                <textarea name="evidence_description" class="cas-input w-full p-2 min-h-24" required></textarea>
+            </div>
+            <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Add Evidence</button>
+        </form>
+    </div>
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Victim</h4>
+        <form method="post" action="{% url 'crime_detail' crime.crime_id %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="add_victim">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Victim Name</label>
+                <input type="text" name="victim_name" class="cas-input w-full p-2" required>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Phone Number</label>
+                <input type="text" name="victim_phone" class="cas-input w-full p-2">
+            </div>
+            <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Add Victim</button>
+        </form>
+    </div>
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Link Criminal</h4>
+        <form method="post" action="{% url 'crime_detail' crime.crime_id %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="add_criminal_link">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Criminal</label>
+                <select name="criminal_id" class="cas-input w-full p-2" required>
+                    <option value="">-- Select Criminal --</option>
+                    {% for criminal in criminal_choices %}
+                    <option value="{{ criminal.criminal_id }}">{{ criminal.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Link Criminal</button>
+        </form>
+    </div>
+    <div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6">
+        <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Link Investigating Officer</h4>
+        <form method="post" action="{% url 'crime_detail' crime.crime_id %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="add_officer_link">
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Officer</label>
+                <select name="officer_id" class="cas-input w-full p-2" required>
+                    <option value="">-- Select Officer --</option>
+                    {% for officer in officer_choices %}
+                    <option value="{{ officer.officer_id }}">{{ officer.name }} [{{ officer.badge_number }}]</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Work Date</label>
+                <input type="date" name="work_date" class="cas-input w-full p-2" required>
+            </div>
+            <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Link Officer</button>
+        </form>
     </div>
 </div>
 {% endblock %}

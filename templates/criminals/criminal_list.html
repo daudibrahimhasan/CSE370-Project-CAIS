@@ -1,16 +1,84 @@
 {% extends 'base.html' %}
 
-{% block page_title %}SYSTEM SUBJECTS DATABASE{% endblock %}
+{% block page_title %}SYSTEM CRIMINALS DATABASE{% endblock %}
 
 {% block content %}
 <div class="mb-6 border-b border-[#2e2e2e] pb-4 flex justify-between items-center">
     <div>
         <h3 class="text-[#e0e0e0] uppercase tracking-widest text-lg">Master Criminal Record Index</h3>
-        <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Complete registry of all logged subjects within the CAS environment.</p>
+        <p class="text-[#666] text-xs mt-1 uppercase tracking-widest">Complete registry of all logged criminals within the Grand Line enforcement network.</p>
     </div>
     <a href="{% url 'repeat_offenders' %}" class="bg-[#1a1a1a] border border-[#c0392b] text-[#c0392b] hover:bg-[#c0392b] hover:text-white px-4 py-2 uppercase tracking-widest text-xs transition-colors font-bold">
         Run Repeat Offender Scan
     </a>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#2e2e2e] p-6 mb-8">
+    <h4 class="text-[#e0e0e0] uppercase tracking-widest text-sm mb-4">Add Criminal</h4>
+    <form method="post" action="{% url 'criminal_list' %}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% csrf_token %}
+        <input type="hidden" name="form_name" value="add_criminal">
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Name</label>
+            <input type="text" name="name" class="cas-input w-full p-2" required>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Age</label>
+            <input type="number" name="age" min="1" class="cas-input w-full p-2" required>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Date Of Birth</label>
+            <input type="date" name="date_of_birth" class="cas-input w-full p-2">
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Gender</label>
+            <input type="text" name="gender" class="cas-input w-full p-2" required>
+        </div>
+        <div>
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Bounty (Berries)</label>
+            <input type="number" name="bounty_amount" min="0" max="1000000" step="0.01" class="cas-input w-full p-2" value="0.00">
+        </div>
+        <div class="md:col-span-2">
+            <label class="block text-[#c0392b] text-xs uppercase mb-1 tracking-widest">Physical Description</label>
+            <textarea name="physical_description" class="cas-input w-full p-2 min-h-24" required></textarea>
+        </div>
+        <div class="md:col-span-2">
+            <button type="submit" class="bg-[#c0392b] text-white px-4 py-2 uppercase tracking-widest text-xs font-bold">Add Criminal</button>
+        </div>
+    </form>
+</div>
+
+<div class="bg-[#1a1a1a] border border-[#5f3c19] p-6 mb-8 relative overflow-hidden">
+    <div class="absolute inset-y-0 left-0 w-1 bg-[#d4a24c]"></div>
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-5">
+        <div>
+            <h4 class="text-[#d4a24c] uppercase tracking-[0.25em] text-xs font-bold">Bounty Poster Ledger</h4>
+            <p class="text-[#9f8b6a] text-[11px] uppercase tracking-widest mt-2">Manually issue or revise bounty values for any wanted criminal.</p>
+        </div>
+        <div class="text-[#d4a24c] font-heading text-2xl tracking-wide uppercase">Wanted</div>
+    </div>
+    <form method="post" action="{% url 'criminal_list' %}" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        {% csrf_token %}
+        <input type="hidden" name="form_name" value="update_bounty">
+        <div>
+            <label class="block text-[#d4a24c] text-xs uppercase mb-1 tracking-widest">Select Criminal</label>
+            <select name="criminal_id" class="cas-input w-full p-2" required>
+                <option value="">-- Choose Criminal --</option>
+                {% for criminal in criminals %}
+                <option value="{{ criminal.criminal_id }}">{{ criminal.name }} | #{{ criminal.criminal_id }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-[#d4a24c] text-xs uppercase mb-1 tracking-widest">Bounty (Berries)</label>
+            <input type="number" name="bounty_amount" min="0" max="1000000" step="0.01" class="cas-input w-full p-2" placeholder="250000.00" required>
+        </div>
+        <div>
+            <button type="submit" class="w-full border border-[#d4a24c] bg-[#2d1909] text-[#f1d9a1] hover:bg-[#d4a24c] hover:text-[#111] px-4 py-2 uppercase tracking-[0.25em] text-xs font-bold transition-colors">
+                Update Poster
+            </button>
+        </div>
+    </form>
 </div>
 
 <div class="bg-[#1a1a1a] border border-[#2e2e2e] overflow-hidden">
@@ -21,6 +89,7 @@
                 <th class="p-4 tracking-widest">Known Alias / Name</th>
                 <th class="p-4 tracking-widest">Age</th>
                 <th class="p-4 tracking-widest">Gender</th>
+                <th class="p-4 tracking-widest">Bounty</th>
                 <th class="p-4 tracking-widest">Actions</th>
             </tr>
         </thead>
@@ -32,6 +101,12 @@
                 <td class="p-4 font-mono">{{ criminal.age }}</td>
                 <td class="p-4 uppercase">{{ criminal.gender }}</td>
                 <td class="p-4">
+                    <div class="inline-flex items-center gap-2 border border-[#3b2d1a] bg-[#17120d] px-3 py-1.5">
+                        <span class="text-[#b8893c] text-[9px] uppercase tracking-widest font-bold">B</span>
+                        <span class="text-[#e0e0e0] font-mono text-xs tracking-widest leading-none">{{ criminal.bounty_amount }}</span>
+                    </div>
+                </td>
+                <td class="p-4">
                     <a href="{% url 'criminal_profile' criminal.criminal_id %}" class="text-[#c0392b] hover:text-[#fff] tracking-widest uppercase text-[10px] transition-all border border-[#c0392b] hover:bg-[#c0392b] px-3 py-1 mt-1 inline-block">
                         Access Profile ->
                     </a>
@@ -39,7 +114,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="5" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
+                <td colspan="6" class="p-8 text-center text-[#888] tracking-widest uppercase bg-[#111]">
                     DATABASE IS EMPTY. NO RECORDS FOUND.
                 </td>
             </tr>
