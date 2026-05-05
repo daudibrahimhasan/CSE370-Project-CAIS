@@ -143,7 +143,7 @@ This document breaks down exactly what happens under the hood when you click a b
     VALUES (%s, %s, %s);
     ```
 
-### 16. Crime Pattern Finder
+### 16. Crime Pattern Finder & Analysis
 *   **Frontend Interaction:** You type a trick/method and click **"Analyze Patterns"** on the `/crimes/pattern-finder/` page.
 *   **Backend File & Part:** `CrimePatternFinder.py` -> `pattern_finder(request)` handles the `GET` request.
 *   **Raw SQL Executed:**
@@ -153,7 +153,7 @@ This document breaks down exactly what happens under the hood when you click a b
     WHERE method_used LIKE %s
     ORDER BY method_used, date_time DESC;
     ```
-
+*   **How the Analysis Works:** The SQL query uses `LIKE %search_query%` to find any matching methods (e.g., searching "lock" finds "lockpicking"). Once the database returns these raw records, Python uses `itertools.groupby` to actively group the crimes by their exact `method_used`. This is the "Analysis" phase—it creates grouped clusters of similar crimes so officers can easily see how many times a specific method was used and when.
 ### 17. Repeat Offender Alert
 *   **Frontend Interaction:** You click **"Repeat Offenders"** in the sidebar to load the page.
 *   **Backend File & Part:** `RepeatOffenders.py` -> `repeat_offenders(request)` handles the `GET` request when the page loads.
